@@ -1,0 +1,3 @@
+[submodule "inputs"]
+	path = inputs
+	url = git@github.com:MartinDoyleUK/aoc-2025-inputs.git

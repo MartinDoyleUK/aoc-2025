@@ -21,8 +21,9 @@
   "scripts": {
     "=============== LIFECYCLE ===============": "",
     "prepare": "husky",
-    "=============== UTILITY ===============": "",
-    "sub": "git submodule update --remote --merge",
+    "============ INPUTS SUBMODULE ============": "",
+    "sub:pull": "git submodule update --remote --merge",
+    "sub:push": "cd inputs && git add . && git commit -m \"$(date +\"%Y-%m-%d %H:%M:%S\") Update inputs\" && git push",
     "=============== CLEANING ===============": "",
     "clean": "rm -rf dist/ tsconfig.tsbuildinfo",
     "=============== BUILDING ===============": "",
