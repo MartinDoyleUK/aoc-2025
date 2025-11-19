@@ -1,0 +1,15 @@
+{
+  "events": {
+    "start": "printf '\\e[2J\\e[3J\\e[H'"
+  },
+  "execMap": {
+    "js": "node --experimental-specifier-resolution=node --no-warnings"
+  },
+  "ext": "js,json,txt",
+  "restartable": "rs",
+  "verbose": false,
+  "watch": [
+    "dist/",
+    "inputs/"
+  ]
+}

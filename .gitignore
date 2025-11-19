@@ -1,0 +1,11 @@
+# Folders
+/dist/
+/node_modules/
+/tmp/
+
+# Files
+tsconfig.tsbuildinfo
+
+# Test data
+/src/**/*.txt
+!/src/**/TEMPLATE/*.txt

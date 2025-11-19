@@ -1,0 +1,71 @@
+{
+  "name": "aoc-2025",
+  "version": "1.0.0",
+  "description": "Advent of Code 2025",
+  "keywords": [
+    "advent of code",
+    "aoc",
+    "2025"
+  ],
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Martin Doyle",
+    "email": "github@martindoyle.com",
+    "url": "https://martindoyle.com"
+  },
+  "engines": {
+    "node": "24"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "=============== LIFECYCLE ===============": "",
+    "prepare": "husky",
+    "=============== UTILITY ===============": "",
+    "sub": "git submodule update --remote --merge",
+    "=============== CLEANING ===============": "",
+    "clean": "rm -rf dist/ tsconfig.tsbuildinfo",
+    "=============== BUILDING ===============": "",
+    "build:clean": "run-s clean build",
+    "build:watch": "tsc --watch",
+    "build": "tsc",
+    "=============== LINTING ===============": "",
+    "lint:checktypes": "tsc --noEmit",
+    "lint:eslint:fix": "eslint --color --fix",
+    "lint:eslint": "eslint --color",
+    "lint:fix": "run-p --aggregate-output --print-label lint:eslint:fix lint:checktypes",
+    "lint": "run-p --continue-on-error --aggregate-output --print-label lint:eslint lint:checktypes",
+    "=============== TESTING ===============": "",
+    "test:ci": "vitest run",
+    "test": "vitest",
+    "=============== RUNNING ===============": "",
+    "dev": "nodemon --config bin/nodemon/dev.json",
+    "solve": "node dist/index.js",
+    "start": "run-s build:clean \"solve all\"",
+    "watch": "pnpm clean && pnpm build:watch"
+  },
+  "lint-staged": {
+    "*.{js,jsx,cjs,mjs,ts,tsx}": "eslint --fix",
+    "*.{ts,tsx}": "bash -c tsc --noEmit"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "lodash": "^4.17.21",
+    "number-to-words": "^1.2.4"
+  },
+  "devDependencies": {
+    "@martindoyle/tsconfig": "^1.2.0",
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^24.10.1",
+    "@types/number-to-words": "^1.2.3",
+    "date-fns": "^4.1.0",
+    "eslint": "^9.39.1",
+    "eslint-config-canonical": "^47.3.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
+    "nodemon": "^3.1.11",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.10"
+  }
+}
