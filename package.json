@@ -37,7 +37,7 @@
     "lint:fix": "run-p --aggregate-output --print-label lint:eslint:fix lint:checktypes",
     "lint": "run-p --continue-on-error --aggregate-output --print-label lint:eslint lint:checktypes",
     "=============== TESTING ===============": "",
-    "test:ci": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test": "vitest",
     "=============== RUNNING ===============": "",
     "dev": "nodemon --config bin/nodemon/dev.json",
@@ -59,6 +59,7 @@
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.10.1",
     "@types/number-to-words": "^1.2.3",
+    "@vitest/coverage-v8": "^4.0.11",
     "date-fns": "^4.1.0",
     "eslint": "^9.39.1",
     "eslint-config-canonical": "^47.3.6",
@@ -67,6 +68,6 @@
     "nodemon": "^3.1.11",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.11"
   }
 }
