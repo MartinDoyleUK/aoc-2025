@@ -1,9 +1,9 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { logComplete, logError, logPuzzleDay, logStart, logTime } from './utils/index.js';
+import { logComplete, logError, logInfo, logPuzzleDay, logStart, logTime } from './utils/index.js';
 
-const HERE = path.dirname(import.meta.url).slice('file:'.length);
+const HERE = import.meta.dirname;
 const DAY_REGEX = /(\d{2})\.js$/u;
 
 const sortStringsNumerically = (a: string, b: string) => {
@@ -28,7 +28,7 @@ const run = async () => {
 
     whichPuzzles = whichPuzzlesArg;
   } else {
-    if (Math.round(puzzlesArgAsNum) !== puzzlesArgAsNum || puzzlesArgAsNum < 1 || puzzlesArgAsNum > 24) {
+    if (Math.round(puzzlesArgAsNum) !== puzzlesArgAsNum || puzzlesArgAsNum < 1 || puzzlesArgAsNum > 999) {
       throw new Error(
         `Must supply one of "latest", "all" or valid puzzle number (was called with "${whichPuzzlesArg}")`,
       );
@@ -60,10 +60,21 @@ const run = async () => {
   // Run through puzzles
   logStart();
   const beforeAll = performance.now();
+  if (allPuzzlePaths.length === 0) {
+    logInfo('No puzzles found. Add files like "01.ts" to src/puzzles and rebuild.');
+    logComplete(beforeAll);
+    return;
+  }
+
   const endIndex = puzzleArgIsNum ? (whichPuzzles as number) : allPuzzlePaths.length;
   const startIndex = whichPuzzles === 'all' ? 0 : endIndex - 1;
   for (let index = startIndex; index < endIndex; index++) {
-    const nextPuzzlePath = allPuzzlePaths[index]!;
+    const nextPuzzlePath = allPuzzlePaths[index];
+    if (!nextPuzzlePath) {
+      logError(`Puzzle at index ${index} not found`);
+      continue;
+    }
+
     const [, day] = DAY_REGEX.exec(nextPuzzlePath) ?? [];
     if (!day) {
       logError(`Could not determine day from path "${nextPuzzlePath}"`);
@@ -83,4 +94,5 @@ const run = async () => {
 
 run().catch((error) => {
   logError('Error running program', error);
+  process.exitCode = 1;
 });

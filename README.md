@@ -1,6 +1,6 @@
-# Advent of Code 2024
+# Advent of Code 2025
 
-This repo is to store my [Advent of Code](https://adventofcode.com/) submissions for 2024. It is optimised to run TypeScript code, and has been setup to provide a live-reloading tester against expected results for each day.
+This repo is to store my [Advent of Code](https://adventofcode.com/) submissions for 2025. It is optimised to run TypeScript code, and has been setup to provide a live-reloading tester against expected results for each day.
 
 ## Setup
 

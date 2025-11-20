@@ -16,6 +16,12 @@ describe('Vector', () => {
       expect(vector.row).toBe(10);
     });
 
+    it('should create vector from signed string', () => {
+      const vector = new Vector('-10,+5');
+      expect(vector.col).toBe(5);
+      expect(vector.row).toBe(-10);
+    });
+
     it('should create vector from Symbol with description', () => {
       const symbol = Symbol.for('10,5');
       const vector = new Vector(symbol);
@@ -24,12 +30,20 @@ describe('Vector', () => {
     });
 
     it('should throw error for Symbol without description', () => {
+      // eslint-disable-next-line symbol-description
       const symbol = Symbol();
       expect(() => new Vector(symbol)).toThrow('Supplied Symbol has no description');
     });
 
     it('should throw error for invalid string format', () => {
-      expect(() => new Vector('invalid')).toThrow('Cannot convert "invalid" to Point');
+      expect(() => new Vector('invalid')).toThrow('Cannot convert "invalid" to Vector');
+    });
+
+    it('should round-trip via toString()', () => {
+      const original = new Vector({ col: -4, row: 9 });
+      const clone = new Vector(original.toString());
+      expect(clone.col).toBe(-4);
+      expect(clone.row).toBe(9);
     });
   });
 

@@ -134,6 +134,7 @@ describe('memoize()', () => {
     const fn = (args: { x: number }) => args.x * 2;
     const memoized = memoize(fn, false);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((memoized as any).getCounts).toBeUndefined();
   });
 

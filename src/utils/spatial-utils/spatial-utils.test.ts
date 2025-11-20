@@ -8,6 +8,11 @@ describe('POINT_REGEX', () => {
     expect(POINT_REGEX.test('10,5')).toBe(true);
   });
 
+  it('should match signed point format', () => {
+    expect(POINT_REGEX.test('-10,+5')).toBe(true);
+    expect(POINT_REGEX.test('+3,-2')).toBe(true);
+  });
+
   it('should not match invalid formats', () => {
     expect(POINT_REGEX.test('invalid')).toBe(false);
     expect(POINT_REGEX.test('10')).toBe(false);

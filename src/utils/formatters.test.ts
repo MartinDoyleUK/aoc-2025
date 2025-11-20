@@ -4,8 +4,8 @@ import { NUMBER_FORMATTER, timeSinceStarted } from './formatters.js';
 
 describe('NUMBER_FORMATTER', () => {
   it('should format numbers with commas', () => {
-    expect(NUMBER_FORMATTER.format(1000)).toBe('1,000');
-    expect(NUMBER_FORMATTER.format(1000000)).toBe('1,000,000');
+    expect(NUMBER_FORMATTER.format(1_000)).toBe('1,000');
+    expect(NUMBER_FORMATTER.format(1_000_000)).toBe('1,000,000');
   });
 });
 
@@ -25,18 +25,18 @@ describe('timeSinceStarted()', () => {
   });
 
   it('should display rounded milliseconds for durations under 2s', () => {
-    vi.spyOn(performance, 'now').mockReturnValue(1234.5);
+    vi.spyOn(performance, 'now').mockReturnValue(1_234.5);
     expect(timeSinceStarted(100)).toBe('1,135ms');
   });
 
   it('should display seconds with 1DP for durations under 10s', () => {
-    vi.spyOn(performance, 'now').mockReturnValue(7500);
+    vi.spyOn(performance, 'now').mockReturnValue(7_500);
     expect(timeSinceStarted(100)).toBe('7.4secs');
   });
 
   it('should use formatDuration for longer durations', () => {
     // 65 seconds
-    vi.spyOn(performance, 'now').mockReturnValue(65100);
+    vi.spyOn(performance, 'now').mockReturnValue(65_100);
     const result = timeSinceStarted(100);
     expect(result).toContain('minute');
   });
@@ -47,12 +47,12 @@ describe('timeSinceStarted()', () => {
   });
 
   it('should handle exactly 2s', () => {
-    vi.spyOn(performance, 'now').mockReturnValue(2100);
+    vi.spyOn(performance, 'now').mockReturnValue(2_100);
     expect(timeSinceStarted(100)).toBe('2secs');
   });
 
   it('should handle exactly 10s', () => {
-    vi.spyOn(performance, 'now').mockReturnValue(10100);
+    vi.spyOn(performance, 'now').mockReturnValue(10_100);
     const result = timeSinceStarted(100);
     expect(result).toContain('second');
   });

@@ -90,6 +90,7 @@ describe('Grid', () => {
       for (const { value } of grid) {
         values.push(value);
       }
+
       expect(values).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
     });
 
@@ -108,9 +109,22 @@ describe('Grid', () => {
   describe('toString()', () => {
     it('should convert grid to string', () => {
       const result = grid.toString();
-      expect(result).toContain('[1, 2, 3]');
-      expect(result).toContain('[4, 5, 6]');
-      expect(result).toContain('[7, 8, 9]');
+      expect(result).toContain('123');
+      expect(result).toContain('456');
+      expect(result).toContain('789');
+    });
+
+    it('should include placeholders for missing values', () => {
+      const ragged = new Grid([[1, 2], [3]]);
+
+      const result = ragged.toString();
+      expect(result).toContain('12');
+      expect(result).toContain('3.');
+    });
+
+    it('should use a mapper when provided', () => {
+      const result = grid.toString((value) => `(${value})`);
+      expect(result).toContain('(1)(2)(3)');
     });
   });
 

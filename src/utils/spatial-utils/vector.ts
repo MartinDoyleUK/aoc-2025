@@ -33,7 +33,7 @@ export class Vector {
     if (vectorStr !== undefined) {
       const match = POINT_REGEX.exec(vectorStr);
       if (match === null) {
-        throw new SyntaxError(`Cannot convert "${vectorStr}" to Point`);
+        throw new SyntaxError(`Cannot convert "${vectorStr}" to Vector`);
       }
 
       const [row, col] = match.slice(1, 3).map(Number) as [number, number];

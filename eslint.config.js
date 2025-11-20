@@ -10,7 +10,7 @@ export default [
     },
   },
   {
-    ignores: ['node_modules/', 'dist/', 'tmp/', 'pnpm-lock.yaml'],
+    ignores: ['node_modules/', 'dist/', 'tmp/', 'coverage/', 'pnpm-lock.yaml'],
   },
   ...canonicalAuto,
   ...projectConfig,

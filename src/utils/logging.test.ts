@@ -6,7 +6,7 @@ import { logAnswer, logComplete, logError, logInfo, logPuzzleDay, logStart, logT
 describe('logging functions', () => {
   beforeEach(() => {
     vi.spyOn(console, 'info').mockImplementation(() => {});
-    vi.spyOn(performance, 'now').mockReturnValue(1000);
+    vi.spyOn(performance, 'now').mockReturnValue(1_000);
     vi.clearAllMocks();
   });
 
@@ -41,12 +41,12 @@ describe('logging functions', () => {
     });
 
     it('should format large numbers with commas', () => {
-      logAnswer({ answer: 1000000, partNum: 1, taskStartedAt: 0 });
+      logAnswer({ answer: 1_000_000, partNum: 1, taskStartedAt: 0 });
       expect(console.info).toHaveBeenCalledWith(expect.stringContaining('1,000,000'));
     });
 
     it('should show raw number when different from formatted', () => {
-      logAnswer({ answer: 1000, partNum: 1, taskStartedAt: 0 });
+      logAnswer({ answer: 1_000, partNum: 1, taskStartedAt: 0 });
       expect(console.info).toHaveBeenCalledWith(expect.stringContaining('(1000)'));
     });
 

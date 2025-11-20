@@ -49,4 +49,10 @@ describe('getDataForPuzzle()', () => {
 
     expect(mockReadFileSync).toHaveBeenCalledWith(expect.stringContaining('09'), 'utf8');
   });
+
+  it('should throw if the filename does not contain a day number', () => {
+    expect(() => getDataForPuzzle('file:///path/to/puzzles/not-a-day.js')).toThrow(
+      'Could not extract day number from puzzle filename',
+    );
+  });
 });

@@ -17,6 +17,12 @@ describe('Point', () => {
       expect(point.row).toBe(10);
     });
 
+    it('should create point from signed string', () => {
+      const point = new Point('-10,+5');
+      expect(point.col).toBe(5);
+      expect(point.row).toBe(-10);
+    });
+
     it('should create point from Symbol with description', () => {
       const symbol = Symbol.for('10,5');
       const point = new Point(symbol);
@@ -25,12 +31,20 @@ describe('Point', () => {
     });
 
     it('should throw error for Symbol without description', () => {
+      // eslint-disable-next-line symbol-description
       const symbol = Symbol();
       expect(() => new Point(symbol)).toThrow('Supplied Symbol has no description');
     });
 
     it('should throw error for invalid string format', () => {
       expect(() => new Point('invalid')).toThrow('Cannot convert "invalid" to Point');
+    });
+
+    it('should round-trip via toString()', () => {
+      const original = new Point({ col: -3, row: 7 });
+      const clone = new Point(original.toString());
+      expect(clone.col).toBe(-3);
+      expect(clone.row).toBe(7);
     });
   });
 

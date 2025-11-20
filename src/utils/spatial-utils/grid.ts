@@ -111,14 +111,23 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
     }
   }
 
-  public toString(): string {
-    return this.#data
-      .values()
-      .map((nextRow) => {
-        return `[${nextRow.values().toArray().join(', ')}]`;
-      })
-      .toArray()
-      .join('\n');
+  public toString(mapper?: (value: TGridData) => string): string {
+    const rows: string[] = [];
+    for (let row = 0; row < this.#numRows; row++) {
+      let rowStr = '';
+      for (let col = 0; col < this.#numCols; col++) {
+        const value = this.#data.get(row)?.get(col);
+        if (value === undefined) {
+          rowStr += '.';
+        } else {
+          rowStr += mapper ? mapper(value) : String(value);
+        }
+      }
+
+      rows.push(rowStr);
+    }
+
+    return rows.join('\n');
   }
 
   public traverse: GridTraversalFn<TTraversalContext, TGridData> = (
