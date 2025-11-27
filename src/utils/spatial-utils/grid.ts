@@ -51,6 +51,16 @@ export const visitInfoToString = <TGridData>(visitInfo: VisitInfo<TGridData>): s
   return `${pointAndValueToString(thisPointAndValue)} (path=${pathToString<TGridData>(path)})`;
 };
 
+/**
+ * A sparse 2D grid wrapper with convenience helpers and traversal support.
+ * The grid stores values by `{ row, col }` coordinates and exposes:
+ * - random access via {@link Grid.at},
+ * - bounds checks via {@link Grid.boundsContain},
+ * - iteration via `for...of`,
+ * - and BFS/DFS traversal via {@link Grid.traverse}.
+ * @template TGridData - The type stored at each grid cell.
+ * @template TTraversalContext - Additional context merged into traversal callbacks.
+ */
 export class Grid<TGridData, TTraversalContext extends Record<string, unknown> = {}> {
   public get numCols() {
     return this.#numCols;
@@ -102,6 +112,34 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
     return rowExists && this.#data.get(point.row)!.has(point.col);
   }
 
+  /**
+   * Set the value at a given point.
+   * If the point is outside the current bounds, the grid dimensions are expanded
+   * unless `strictBounds` is `true`, in which case an error is thrown.
+   * @param point - The point to set.
+   * @param value - The value to store at that point.
+   * @param strictBounds - If `true`, throw an error when the point is out of bounds (default: `false`).
+   * @throws Error if `strictBounds` is `true` and the point is outside the grid bounds.
+   */
+  public set(point: Point, value: TGridData, strictBounds = false): void {
+    if (strictBounds && !this.boundsContain(point)) {
+      throw new Error(`Point ${point.toString()} is out of bounds (grid is ${this.#numRows}x${this.#numCols})`);
+    }
+
+    const rowMap = this.#data.get(point.row) ?? new Map<number, TGridData>();
+    rowMap.set(point.col, value);
+    this.#data.set(point.row, rowMap);
+
+    // Expand bounds if necessary
+    if (point.row >= this.#numRows) {
+      this.#numRows = point.row + 1;
+    }
+
+    if (point.col >= this.#numCols) {
+      this.#numCols = point.col + 1;
+    }
+  }
+
   // Make grid iterable (i.e. can use for...of)
   *[Symbol.iterator]() {
     for (const row of this.#data.keys()) {
@@ -111,6 +149,21 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
     }
   }
 
+  /**
+   * Render the grid as a multi-line string.
+   * Missing cells (e.g. in ragged input) are rendered as `.` to make
+   * irregular shapes visually obvious.
+   * @param mapper - Optional transform for each stored value.
+   * @returns A string representation of the grid, one row per line.
+   * @example
+   * const grid = new Grid([
+   *   [1, 2],
+   *   [3, 4],
+   * ]);
+   * grid.toString(); // "12\n34"
+   * // Using a mapper
+   * grid.toString((value) => (value === 1 ? '#' : '.')); // "#.\n.."
+   */
   public toString(mapper?: (value: TGridData) => string): string {
     const rows: string[] = [];
     for (let row = 0; row < this.#numRows; row++) {
@@ -130,6 +183,36 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
     return rows.join('\n');
   }
 
+  /**
+   * Traverse the grid using BFS or DFS starting from a given point.
+   * The traversal is driven entirely by the `onVisit` callback, which can:
+   * - stop the traversal early (`abort: true`),
+   * - or prevent visiting neighbours for a node (`visitNeighbours: false`).
+   * In addition to the current point and value, your callback receives:
+   * - `path` – the path of `(point, value)` pairs taken to reach this node,
+   * - `thisPathVisited` – a set of points visited on this path (used when `multipath` is `true`),
+   * - `globalVisited` – a set of all points visited so far,
+   * - `directions` – the vectors used to explore neighbours.
+   * @param startAt - The starting point for traversal.
+   * @param traversalType - `'bfs'` for breadth-first search or `'dfs'` for depth-first search.
+   * @param options - Additional traversal options.
+   * @param options.customContext - Custom context to merge into traversal callbacks.
+   * @param options.debug - Whether to log each visit for debugging.
+   * @param options.directions - The directions to use when exploring neighbours.
+   * @param options.multipath - When `true`, track per-path visited state instead of global only.
+   * @param options.onVisit - Callback invoked for each visited node.
+   * @example
+   * // Count reachable cells from the top-left corner
+   * const grid = linesToNumberGrid(['123', '456']);
+   * let count = 0;
+   * grid.traverse(new Point({ row: 0, col: 0 }), 'bfs', {
+   *   multipath: false,
+   *   onVisit: () => {
+   *     count++;
+   *     return { abort: false, visitNeighbours: true };
+   *   },
+   * });
+   */
   public traverse: GridTraversalFn<TTraversalContext, TGridData> = (
     startAt,
     traversalType,

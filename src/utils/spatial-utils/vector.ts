@@ -1,6 +1,14 @@
 import { type ColRow } from './spatial-types.js';
 import { POINT_REGEX } from './spatial-utils.js';
 
+/**
+ * Immutable 2D vector, representing an offset `{ row, col }`.
+ *
+ * Can be created from:
+ * - a `{ row, col }` object,
+ * - a `"row,col"` string (e.g. `"-1,+2"`),
+ * - or a `Symbol.for('row,col')`.
+ */
 export class Vector {
   public get col(): number {
     return this.#col;
@@ -64,6 +72,12 @@ export class Vector {
   }
 }
 
+/**
+ * Commonly used cardinal and diagonal direction vectors.
+ *
+ * - `N`, `E`, `S`, `W` – cardinal directions
+ * - `NE`, `NW`, `SE`, `SW` – diagonals
+ */
 export const VECTORS = {
   E: new Vector({ col: 1, row: 0 }),
   N: new Vector({ col: 0, row: -1 }),
@@ -74,3 +88,18 @@ export const VECTORS = {
   SW: new Vector({ col: -1, row: 1 }),
   W: new Vector({ col: -1, row: 0 }),
 };
+
+/**
+ * Cardinal directions only: North, East, South, West.
+ */
+export const CARDINAL_VECTORS: Vector[] = [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W];
+
+/**
+ * Diagonal directions only: NE, SE, SW, NW.
+ */
+export const DIAGONAL_VECTORS: Vector[] = [VECTORS.NE, VECTORS.SE, VECTORS.SW, VECTORS.NW];
+
+/**
+ * All eight directions: cardinal + diagonal.
+ */
+export const ALL_VECTORS: Vector[] = [...CARDINAL_VECTORS, ...DIAGONAL_VECTORS];

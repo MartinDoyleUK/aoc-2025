@@ -7,11 +7,14 @@ type FindTransitionByIndexArgs = {
 type FindTransitionByIndexFunction = (args: FindTransitionByIndexArgs) => number | undefined;
 
 /**
- * Find the mid-point of a range, i.e. the next candidate for a binary search
- * @param {number} start The start of the range to be considered
- * @param {number} end The end of the range to be considered
- * @returns {number} The mid-point of the range
- * @throws Will throw an error if the range is invalid (e.g. start above end, or undefined values)
+ * Get the mid-point of a numeric range – i.e. the next candidate for a binary search.
+ * @param start - The inclusive start of the range to be considered.
+ * @param end - The inclusive end of the range to be considered.
+ * @returns The mid-point of the range.
+ * @throws Will throw an error if the range is invalid (e.g. `start` above `end`, or `start`/`end` are `undefined`).
+ * @example
+ * // Basic odd-length range
+ * getBinaryCandidate(4, 6); // => 5
  */
 export const getBinaryCandidate = (start: number, end: number) => {
   if (start === undefined || end === undefined || start > end) {
@@ -21,6 +24,17 @@ export const getBinaryCandidate = (start: number, end: number) => {
   return Math.floor((start + end) / 2);
 };
 
+/**
+ * Given an array of 0s followed by 1s, return the first index where the value becomes 1.
+ * This is a specialised binary-search helper for cases where a predicate
+ * transitions from `false` (0) to `true` (1) at most once.
+ * @param array - A binary array containing only `0` and `1` values.
+ * @param length - The number of elements from the array to consider.
+ * @returns The index of the first `1`, or -1 if no transition exists.
+ * @example
+ * // Transition at index 3
+ * findTransitionPoint([0, 0, 0, 1, 1], 5); // => 3
+ */
 export const findTransitionPoint = (array: Array<0 | 1>, length: number) => {
   // Initialise lower and upper bounds
   let start = 0;
@@ -52,12 +66,23 @@ export const findTransitionPoint = (array: Array<0 | 1>, length: number) => {
 };
 
 /**
- * Find the point of transition between a predicate being false (lower half) and true (upper half) of a range.
- * @param {object} arg - Arguments object
- * @param {string} arg.lower - The index of the start of the range to be analysed
- * @param {string} arg.upper - The index of the end of the range to be analysed
- * @param {string} arg.predicate - A function that takes an index and returns false before the transition point and true after it
- * @returns {number} The first index for which the predicate returns true or undefined if there's no transition found
+ * Find the index where a predicate flips from `false` to `true` across an integer range.
+ * This is a generic binary search that assumes:
+ * - for indices `< transition` the predicate returns `false`
+ * - for indices `>= transition` the predicate returns `true`
+ * @param args - The arguments controlling the search range and predicate.
+ * @param args.lower - The first index to consider (inclusive).
+ * @param args.upper - The last index to consider (inclusive).
+ * @param args.predicate - A function that takes an index and returns `true` or `false`.
+ * @returns The first index for which `predicate(index)` is `true`, or `undefined` if no transition is found.
+ * @example
+ * // Find smallest n such that n^2 >= 50
+ * const result = findTransitionByIndex({
+ *   lower: 1,
+ *   upper: 10,
+ *   predicate: (n) => n * n >= 50,
+ * });
+ * // result === 8
  */
 export const findTransitionByIndex: FindTransitionByIndexFunction = ({ lower, predicate, upper }) => {
   let start = lower;
@@ -78,6 +103,39 @@ export const findTransitionByIndex: FindTransitionByIndexFunction = ({ lower, pr
   return transition;
 };
 
+/**
+ * Memoize a function that takes a single argument object.
+ * Results are cached using `JSON.stringify(argsObject)` as the key, which
+ * makes this helper ideal for pure, deterministic functions with simple
+ * argument shapes (numbers, strings, plain objects).
+ * When `countExecutions` is `true`, the returned function is augmented with
+ * a `getCounts()` method that exposes how many times each unique argument
+ * combination was evaluated.
+ * @template Args - The shape of the single argument object accepted by the function.
+ * @template Result - The returned type of the function.
+ * @param functionToMemoize - The function whose results you want to cache.
+ * @param countExecutions - When `true`, track how often each argument combination is evaluated.
+ * @returns A memoized version of the function.
+ * @example
+ * // Basic memoization
+ * const slowSquare = ({ value }: { value: number }) => {
+ *   // pretend this is expensive
+ *   return value * value;
+ * };
+ * const memoizedSquare = memoize(slowSquare);
+ * memoizedSquare({ value: 5 }); // computes and caches
+ * memoizedSquare({ value: 5 }); // returns cached value
+ * @example
+ * // With execution counts
+ * const fn = ({ n }: { n: number }) => n * 2;
+ * const tracked = memoize(fn, true) as typeof fn & { getCounts: () => Map<string, number> };
+ *
+ * tracked({ n: 1 });
+ * tracked({ n: 1 });
+ * tracked({ n: 2 });
+ *
+ * tracked.getCounts().get(JSON.stringify({ n: 1 })); // => 2
+ */
 export const memoize = <Args, Result>(
   functionToMemoize: (argsObject: Args) => Result,
   countExecutions = false,

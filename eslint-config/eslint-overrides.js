@@ -8,6 +8,7 @@ const canonicalConfig = canonicalRecommended[0];
 export const overrides = {
   files: canonicalConfig.files,
   rules: {
+    '@stylistic/type-annotation-spacing': OFF,
     '@typescript-eslint/array-type': OFF,
     '@typescript-eslint/no-non-null-assertion': OFF,
     'id-length': OFF,

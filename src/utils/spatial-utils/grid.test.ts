@@ -320,3 +320,48 @@ describe('visitInfoToString()', () => {
     expect(result).toContain('<empty>');
   });
 });
+
+describe('set()', () => {
+  let grid: Grid<number>;
+
+  beforeEach(() => {
+    grid = new Grid([
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]);
+  });
+
+  it('should set value at a point within bounds', () => {
+    const point = new Point({ col: 1, row: 1 });
+    grid.set(point, 99);
+    expect(grid.at(point)).toBe(99);
+  });
+
+  it('should expand bounds when setting value outside bounds', () => {
+    const point = new Point({ col: 5, row: 5 });
+    grid.set(point, 42);
+    expect(grid.at(point)).toBe(42);
+    expect(grid.numRows).toBe(6);
+    expect(grid.numCols).toBe(6);
+  });
+
+  it('should throw when strictBounds is true and point is outside bounds', () => {
+    const point = new Point({ col: 10, row: 10 });
+    expect(() => grid.set(point, 42, true)).toThrow('Point 10,10 is out of bounds (grid is 3x3)');
+  });
+
+  it('should not throw when strictBounds is true and point is inside bounds', () => {
+    const point = new Point({ col: 1, row: 1 });
+    expect(() => grid.set(point, 42, true)).not.toThrow();
+    expect(grid.at(point)).toBe(42);
+  });
+
+  it('should expand bounds when strictBounds is false (default)', () => {
+    const point = new Point({ col: 10, row: 10 });
+    grid.set(point, 42);
+    expect(grid.at(point)).toBe(42);
+    expect(grid.numRows).toBe(11);
+    expect(grid.numCols).toBe(11);
+  });
+});

@@ -1,7 +1,15 @@
 import { type ColRow } from './spatial-types.js';
 import { POINT_REGEX } from './spatial-utils.js';
-import { Vector } from './vector.js';
+import { CARDINAL_VECTORS, Vector } from './vector.js';
 
+/**
+ * Immutable 2D point, addressed by `{ row, col }`.
+ *
+ * A `Point` can be constructed from:
+ * - a `{ row, col }` object,
+ * - a `"row,col"` string (e.g. `"3,5"`),
+ * - or a `Symbol.for('row,col')`.
+ */
 export class Point {
   public get col(): number {
     return this.#col;
@@ -79,6 +87,18 @@ export class Point {
       col: point.col - this.#col,
       row: point.row - this.#row,
     });
+  }
+
+  /**
+   * Get all neighbouring points in the given directions.
+   * @param directions - The directions to check (defaults to cardinal directions).
+   * @returns An array of adjacent points.
+   * @example
+   * const p = new Point({ row: 1, col: 1 });
+   * p.neighbours(); // => [Point(0,1), Point(1,2), Point(2,1), Point(1,0)]
+   */
+  public neighbours(directions: Vector[] = CARDINAL_VECTORS): Point[] {
+    return directions.map((dir) => this.applyVector(dir));
   }
 
   public toJSON(): string {
