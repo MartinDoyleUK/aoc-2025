@@ -1,11 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { NUMBER_FORMATTER, timeSinceStarted } from './formatters.js';
+import { formatNum, timeSinceStarted } from './formatters.js';
 
-describe('NUMBER_FORMATTER', () => {
-  it('should format numbers with commas', () => {
-    expect(NUMBER_FORMATTER.format(1_000)).toBe('1,000');
-    expect(NUMBER_FORMATTER.format(1_000_000)).toBe('1,000,000');
+describe('formatNum()', () => {
+  it('formats numbers with en-GB defaults', () => {
+    expect(formatNum(1_000)).toBe('1,000');
+    expect(formatNum(1_000_000)).toBe('1,000,000');
+  });
+
+  it('formats using presets', () => {
+    expect(formatNum(1_234.56, 'rounded')).toBe('1,235');
+    expect(formatNum(1_234.56, 'oneDP')).toBe('1,234.6');
+  });
+
+  it('formats using custom options', () => {
+    expect(formatNum(12.345, { maximumFractionDigits: 2, minimumFractionDigits: 2 })).toBe('12.35');
   });
 });
 

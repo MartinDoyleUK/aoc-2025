@@ -11,14 +11,23 @@ import { CARDINAL_VECTORS, Vector } from './vector.js';
  * - or a `Symbol.for('row,col')`.
  */
 export class Point {
+  /**
+   * Column index for this point.
+   */
   public get col(): number {
     return this.#col;
   }
 
+  /**
+   * Stable symbol identifier based on the point string representation.
+   */
   public get id(): Symbol {
     return Symbol.for(this.toString());
   }
 
+  /**
+   * Row index for this point.
+   */
   public get row(): number {
     return this.#row;
   }
@@ -27,6 +36,15 @@ export class Point {
 
   #row: number;
 
+  /**
+   * Create a point from `{ row, col }`, a `"row,col"` string, or `Symbol.for('row,col')`.
+   * @param params - Coordinates as an object, string, or symbol.
+   * @throws SyntaxError when a string/symbol cannot be parsed.
+   * @example
+   * new Point({ row: 1, col: 2 });
+   * new Point('1,2');
+   * new Point(Symbol.for('1,2'));
+   */
   public constructor(params: ColRow | string | Symbol) {
     let vectorStr: string | undefined;
     if (typeof params === 'string') {
@@ -70,6 +88,14 @@ export class Point {
     }
   }
 
+  /**
+   * Move the point by a vector.
+   * @param vector - The vector to apply.
+   * @param reverse - When `true`, subtract the vector instead.
+   * @returns A new translated `Point`.
+   * @example
+   * new Point({ row: 1, col: 1 }).applyVector(new Vector({ row: 0, col: 2 })); // => Point(1,3)
+   */
   public applyVector(vector: Vector, reverse = false): Point {
     const newCol = reverse ? this.#col - vector.col : this.#col + vector.col;
     const newRow = reverse ? this.#row - vector.row : this.#row + vector.row;
@@ -77,11 +103,23 @@ export class Point {
     return new Point({ col: newCol, row: newRow });
   }
 
+  /**
+   * Calculate the Euclidean distance to another point.
+   * @param point - The destination point.
+   * @returns The straight-line distance.
+   * @example
+   * new Point({ row: 0, col: 0 }).getDistanceTo(new Point({ row: 3, col: 4 })); // => 5
+   */
   public getDistanceTo(point: Point): number {
     const vector = this.getVectorTo(point);
     return Math.hypot(vector.col, vector.row);
   }
 
+  /**
+   * Get the vector needed to travel from this point to another point.
+   * @param point - The destination point.
+   * @returns A `Vector` representing the delta.
+   */
   public getVectorTo(point: Point): Vector {
     return new Vector({
       col: point.col - this.#col,
@@ -101,10 +139,18 @@ export class Point {
     return directions.map((dir) => this.applyVector(dir));
   }
 
+  /**
+   * String representation suitable for JSON logging.
+   * @returns `"Point(row,col)"`.
+   */
   public toJSON(): string {
     return `Point(${this.toString()})`;
   }
 
+  /**
+   * Convert the point to `"row,col"` form.
+   * @returns The coordinate string.
+   */
   public toString(): string {
     return `${this.#row},${this.#col}`;
   }

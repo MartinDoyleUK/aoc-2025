@@ -6,12 +6,12 @@
  * @example
  * findGreatestCommonDenominator(48, 18); // => 6
  */
-export const findGreatestCommonDenominator = (first: number, second: number): number => {
+export const findGreatestCommonDivisor = (first: number, second: number): number => {
   if (second === 0) {
     return first;
   }
 
-  return findGreatestCommonDenominator(second, first % second);
+  return findGreatestCommonDivisor(second, first % second);
 };
 
 /**
@@ -22,8 +22,10 @@ export const findGreatestCommonDenominator = (first: number, second: number): nu
  * @example
  * getLowestCommonMultipleOfTwoNumbers(12, 18); // => 36
  */
-export const getLowestCommonMultipleOfTwoNumbers = (first: number, second: number) =>
-  (first / findGreatestCommonDenominator(first, second)) * second;
+export const getLowestCommonMultipleOfTwoNumbers = (first: number, second: number) => {
+  const gcd = findGreatestCommonDivisor(first, second);
+  return (first / gcd) * second;
+};
 
 /**
  * Compute the lowest common multiple (LCM) of an array of integers.
@@ -32,6 +34,7 @@ export const getLowestCommonMultipleOfTwoNumbers = (first: number, second: numbe
  * @example
  * getLowestCommonMultiple([12, 18, 24]); // => 72
  */
-export const getLowestCommonMultiple = (inputs: number[]) =>
+export const getLowestCommonMultiple = (inputs: number[]) => {
   // eslint-disable-next-line unicorn/no-array-reduce
-  inputs.reduce(getLowestCommonMultipleOfTwoNumbers, 1);
+  return inputs.reduce(getLowestCommonMultipleOfTwoNumbers, 1);
+};

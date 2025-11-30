@@ -10,14 +10,23 @@ import { POINT_REGEX } from './spatial-utils.js';
  * - or a `Symbol.for('row,col')`.
  */
 export class Vector {
+  /**
+   * Column delta represented by the vector.
+   */
   public get col(): number {
     return this.#col;
   }
 
+  /**
+   * Stable symbol identifier based on the vector string representation.
+   */
   public get id(): Symbol {
     return Symbol.for(this.toString());
   }
 
+  /**
+   * Row delta represented by the vector.
+   */
   public get row(): number {
     return this.#row;
   }
@@ -26,6 +35,15 @@ export class Vector {
 
   #row: number;
 
+  /**
+   * Create a vector from `{ row, col }`, a `"row,col"` string, or `Symbol.for('row,col')`.
+   * @param params - Coordinates as an object, string, or symbol.
+   * @throws SyntaxError when a string/symbol cannot be parsed.
+   * @example
+   * new Vector({ row: -1, col: 2 });
+   * new Vector('-1,+2');
+   * new Vector(Symbol.for('-1,+2'));
+   */
   public constructor(params: ColRow | string | Symbol) {
     let vectorStr: string | undefined;
     if (typeof params === 'string') {
@@ -55,18 +73,37 @@ export class Vector {
     this.#col = objParams.col;
   }
 
+  /**
+   * Compare two vectors for equality.
+   * @param other - The vector to compare against.
+   * @returns `true` when both row and col match.
+   */
   public eq(other: Vector): boolean {
     return this.#col === other.#col && this.#row === other.#row;
   }
 
+  /**
+   * Get the inverse of this vector.
+   * @returns A new vector with both components negated.
+   * @example
+   * new Vector({ row: 1, col: -2 }).invert().toString(); // => "-1,+2"
+   */
   public invert(): Vector {
     return new Vector({ col: -this.#col, row: -this.#row });
   }
 
+  /**
+   * String representation suitable for JSON logging.
+   * @returns `"Vector(row,col)"`.
+   */
   public toJSON(): string {
     return `Vector(${this.toString()})`;
   }
 
+  /**
+   * Convert the vector to `"row,col"` form (with explicit signs).
+   * @returns The coordinate string.
+   */
   public toString(): string {
     return `${this.#row > 0 ? `+${this.#row}` : this.#row},${this.#col > 0 ? `+${this.#col}` : this.#col}`;
   }

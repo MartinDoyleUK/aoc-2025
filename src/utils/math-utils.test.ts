@@ -1,30 +1,30 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  findGreatestCommonDenominator,
+  findGreatestCommonDivisor,
   getLowestCommonMultiple,
   getLowestCommonMultipleOfTwoNumbers,
 } from './math-utils.js';
 
 describe('findGreatestCommonDenominator()', () => {
   it('should find GCD of two numbers', () => {
-    expect(findGreatestCommonDenominator(48, 18)).toBe(6);
+    expect(findGreatestCommonDivisor(48, 18)).toBe(6);
   });
 
   it('should handle when second number is zero', () => {
-    expect(findGreatestCommonDenominator(10, 0)).toBe(10);
+    expect(findGreatestCommonDivisor(10, 0)).toBe(10);
   });
 
   it('should handle when first number is smaller', () => {
-    expect(findGreatestCommonDenominator(18, 48)).toBe(6);
+    expect(findGreatestCommonDivisor(18, 48)).toBe(6);
   });
 
   it('should handle equal numbers', () => {
-    expect(findGreatestCommonDenominator(12, 12)).toBe(12);
+    expect(findGreatestCommonDivisor(12, 12)).toBe(12);
   });
 
   it('should handle coprime numbers', () => {
-    expect(findGreatestCommonDenominator(17, 19)).toBe(1);
+    expect(findGreatestCommonDivisor(17, 19)).toBe(1);
   });
 });
 

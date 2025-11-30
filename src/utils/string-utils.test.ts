@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { reverseString } from './string-utils.js';
+import { parseLines, reverseString } from './string-utils.js';
 
 describe('reverseString()', () => {
   it('should reverse a simple string', () => {
@@ -21,5 +21,20 @@ describe('reverseString()', () => {
 
   it('should handle palindrome', () => {
     expect(reverseString('racecar')).toBe('racecar');
+  });
+});
+
+describe('parseLines()', () => {
+  it('should trim and filter blank lines', () => {
+    const input = '  foo  \n\n  bar\n   \n';
+    expect(parseLines(input)).toEqual(['foo', 'bar']);
+  });
+
+  it('should return empty array for empty string', () => {
+    expect(parseLines('')).toEqual([]);
+  });
+
+  it('should keep internal spacing while trimming ends', () => {
+    expect(parseLines('  foo bar  \n baz   ')).toEqual(['foo bar', 'baz']);
   });
 });

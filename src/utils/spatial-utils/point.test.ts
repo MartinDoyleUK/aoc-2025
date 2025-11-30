@@ -144,6 +144,14 @@ describe('Point', () => {
     });
   });
 
+  describe('neighbours()', () => {
+    it('should return cardinal neighbours in order N,E,S,W by default', () => {
+      const point = new Point({ col: 2, row: 2 });
+      const neighbours = point.neighbours();
+      expect(neighbours.map((p) => p.toString())).toEqual(['1,2', '2,3', '3,2', '2,1']);
+    });
+  });
+
   describe('toString()', () => {
     it('should convert to string', () => {
       const point = new Point({ col: 5, row: 10 });

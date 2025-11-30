@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { findTransitionByIndex, findTransitionPoint, getBinaryCandidate, memoize } from './common-algorithms.js';
+import { findTransition, getBinaryCandidate, memoize } from './common-algorithms.js';
 
 describe('getBinaryCandidate()', () => {
   const testCases = [
@@ -27,69 +27,61 @@ describe('getBinaryCandidate()', () => {
   });
 });
 
-describe('findTransitionByIndex()', () => {
-  const testCases = [
-    ['should find the transition point in an odd range', 1, 3, 2],
-    ['should find the transition point in an even range', 1, 4, 3],
-    ['should find the transition point where the candidate jumps the transition point', 1, 100, 74],
+describe('findTransition()', () => {
+  const binaryTestCases: Array<[string, Array<0 | 1>, number | undefined]> = [
+    ['should find transition from 0 to 1 in array', [0, 0, 0, 1, 1, 1], 3],
+    ['should find transition at start of array', [1, 1, 1, 1], 0],
+    ['should find transition at end of array', [0, 0, 0, 1], 3],
+    ['should return undefined when no transition exists (all zeros)', [0, 0, 0, 0], undefined],
+    ['should find transition in middle of array', [0, 0, 1, 1], 2],
+    ['should handle single element array with 1', [1], 0],
+    ['should handle single element array with 0', [0], undefined],
+    ['should handle two element array with transition', [0, 1], 1],
   ];
 
-  it.each(testCases)('%s', (_, lower, upper, expected) => {
-    const predicate = (input: number) => input >= (expected as number);
-    const actual = findTransitionByIndex({
-      lower: lower as number,
-      predicate,
-      upper: upper as number,
-    });
-    expect(actual).toBe(expected as number);
+  it.each(binaryTestCases)('%s', (_, array, expected) => {
+    const actual = findTransition({ array, predicate: (value) => value === 1 });
+    expect(actual).toBe(expected);
+  });
+
+  const derivedTestCases: Array<
+    [string, readonly number[], (value: number, index: number, array: readonly number[]) => boolean, number]
+  > = [
+    ['should find transition using derived values', [1, 3, 5, 7, 9], (value) => value >= 5, 2],
+    [
+      'should find transition where the candidate jumps the transition point',
+      Array.from({ length: 100 }, (_, index) => index + 1),
+      (value) => value >= 75,
+      74,
+    ],
+  ];
+
+  it.each(derivedTestCases)('%s', (_, array, predicate, expected) => {
+    const actual = findTransition({ array, predicate });
+    expect(actual).toBe(expected);
   });
 
   it('should return undefined if there is no transition', () => {
     const predicate = () => false;
-    const actual = findTransitionByIndex({ lower: 1, predicate, upper: 10 });
+    const actual = findTransition({ array: [1, 2, 3, 4], predicate });
     expect(actual).toBeUndefined();
   });
-});
 
-describe('findTransitionPoint()', () => {
-  it('should find transition from 0 to 1 in array', () => {
-    const array: Array<0 | 1> = [0, 0, 0, 1, 1, 1];
-    expect(findTransitionPoint(array, array.length)).toBe(3);
-  });
+  it('passes value, index and array to predicate', () => {
+    const calls: Array<{ arrayLength: number; index: number; value: number }> = [];
+    const actual = findTransition({
+      array: [0, 0, 1],
+      predicate: (value, index, array) => {
+        calls.push({ arrayLength: array.length, index, value });
+        return value === 1;
+      },
+    });
 
-  it('should find transition at start of array', () => {
-    const array: Array<0 | 1> = [1, 1, 1, 1];
-    expect(findTransitionPoint(array, array.length)).toBe(0);
-  });
-
-  it('should find transition at end of array', () => {
-    const array: Array<0 | 1> = [0, 0, 0, 1];
-    expect(findTransitionPoint(array, array.length)).toBe(3);
-  });
-
-  it('should return -1 when no transition exists (all zeros)', () => {
-    const array: Array<0 | 1> = [0, 0, 0, 0];
-    expect(findTransitionPoint(array, array.length)).toBe(-1);
-  });
-
-  it('should find transition in middle of array', () => {
-    const array: Array<0 | 1> = [0, 0, 1, 1];
-    expect(findTransitionPoint(array, array.length)).toBe(2);
-  });
-
-  it('should handle single element array with 1', () => {
-    const array: Array<0 | 1> = [1];
-    expect(findTransitionPoint(array, array.length)).toBe(0);
-  });
-
-  it('should handle single element array with 0', () => {
-    const array: Array<0 | 1> = [0];
-    expect(findTransitionPoint(array, array.length)).toBe(-1);
-  });
-
-  it('should handle two element array with transition', () => {
-    const array: Array<0 | 1> = [0, 1];
-    expect(findTransitionPoint(array, array.length)).toBe(1);
+    expect(actual).toBe(2);
+    expect(calls).toEqual([
+      { arrayLength: 3, index: 1, value: 0 },
+      { arrayLength: 3, index: 2, value: 1 },
+    ]);
   });
 });
 

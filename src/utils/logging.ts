@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import _ from 'lodash';
 import numberToWords from 'number-to-words';
 
-import { NUMBER_FORMATTER, timeSinceStarted } from './formatters.js';
+import { formatNum, timeSinceStarted } from './formatters.js';
 
 type LogAnswerFunction = (args: {
   answer: unknown;
@@ -64,7 +64,7 @@ export const logAnswer: LogAnswerFunction = ({ answer, expected: expectedParamet
   const partText = `${_.capitalize(numberToWords.toWordsOrdinal(partNum))} part took ${timeTaken}`;
   let answerText: string;
   if (typeof answer === 'number') {
-    const formatted = NUMBER_FORMATTER.format(answer);
+    const formatted = formatNum(answer);
     const raw = `${answer}`;
     answerText = `Answer is ${formatted}`;
     if (formatted !== raw) {

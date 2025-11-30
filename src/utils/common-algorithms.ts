@@ -1,10 +1,9 @@
-type FindTransitionByIndexArgs = {
-  lower: number;
-  predicate: (index: number) => boolean;
-  upper: number;
+type FindTransitionArgs<TValue> = {
+  array: readonly TValue[];
+  predicate: (value: TValue, index: number, array: readonly TValue[]) => boolean;
 };
 
-type FindTransitionByIndexFunction = (args: FindTransitionByIndexArgs) => number | undefined;
+type FindTransitionFunction = <TValue = unknown>(args: FindTransitionArgs<TValue>) => number | undefined;
 
 /**
  * Get the mid-point of a numeric range – i.e. the next candidate for a binary search.
@@ -25,74 +24,28 @@ export const getBinaryCandidate = (start: number, end: number) => {
 };
 
 /**
- * Given an array of 0s followed by 1s, return the first index where the value becomes 1.
- * This is a specialised binary-search helper for cases where a predicate
- * transitions from `false` (0) to `true` (1) at most once.
- * @param array - A binary array containing only `0` and `1` values.
- * @param length - The number of elements from the array to consider.
- * @returns The index of the first `1`, or -1 if no transition exists.
+ * Find the index where a predicate flips from `false` to `true` across a sorted/monotonic array.
+ * Assumes the predicate returns `false` for all indices before the transition and `true` afterwards.
+ * @param args - The arguments controlling the search.
+ * @param args.array - The array to search. Its order should make the predicate monotonic.
+ * @param args.predicate - A function that takes the current value, its index and the full array, and returns a boolean.
+ * @returns The first index for which `predicate(value, index, array)` is `true`, or `undefined` if no transition is found.
  * @example
- * // Transition at index 3
- * findTransitionPoint([0, 0, 0, 1, 1], 5); // => 3
+ * // Binary data
+ * findTransition({ array: [0, 0, 0, 1, 1], predicate: (value) => value === 1 }); // => 3
+ * @example
+ * // Derived from ordered numbers
+ * findTransition({ array: [4, 9, 16, 25], predicate: (value) => value >= 20 }); // => 3
  */
-export const findTransitionPoint = (array: Array<0 | 1>, length: number) => {
-  // Initialise lower and upper bounds
+export const findTransition: FindTransitionFunction = ({ array, predicate }) => {
   let start = 0;
-  let end = length - 1;
-
-  // Perform Binary search
-  while (start <= end) {
-    // Find pointer
-    // const pointer = Number.parseInt((start + end) / 2, 10);
-    const pointer = Math.floor((start + end) / 2);
-    const predicateIsFalse = array[pointer] === 0;
-
-    // update lower_bound if pointer contains 0
-    if (predicateIsFalse) {
-      start = pointer + 1;
-    } else {
-      // Check if it is the left most 1
-      // Return pointer, if yes
-      if (pointer === 0 || (pointer > 0 && array[pointer - 1] === 0)) {
-        return pointer;
-      }
-
-      // Else update upper_bound
-      end = pointer - 1;
-    }
-  }
-
-  return -1;
-};
-
-/**
- * Find the index where a predicate flips from `false` to `true` across an integer range.
- * This is a generic binary search that assumes:
- * - for indices `< transition` the predicate returns `false`
- * - for indices `>= transition` the predicate returns `true`
- * @param args - The arguments controlling the search range and predicate.
- * @param args.lower - The first index to consider (inclusive).
- * @param args.upper - The last index to consider (inclusive).
- * @param args.predicate - A function that takes an index and returns `true` or `false`.
- * @returns The first index for which `predicate(index)` is `true`, or `undefined` if no transition is found.
- * @example
- * // Find smallest n such that n^2 >= 50
- * const result = findTransitionByIndex({
- *   lower: 1,
- *   upper: 10,
- *   predicate: (n) => n * n >= 50,
- * });
- * // result === 8
- */
-export const findTransitionByIndex: FindTransitionByIndexFunction = ({ lower, predicate, upper }) => {
-  let start = lower;
-  let end = upper;
+  let end = array.length - 1;
 
   let transition: number | undefined;
   let pointer: number;
   while (start <= end) {
     pointer = getBinaryCandidate(start, end);
-    if (predicate(pointer)) {
+    if (predicate(array[pointer]!, pointer, array)) {
       transition = pointer;
       end = pointer - 1;
     } else {

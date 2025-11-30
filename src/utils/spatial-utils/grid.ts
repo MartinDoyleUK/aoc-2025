@@ -46,6 +46,11 @@ const pathToString = <TGridData>(path: VisitPointAndValue<TGridData>[]): string 
   return path.map(({ point: { col, row } }) => `${row},${col}`).join('=>');
 };
 
+/**
+ * Convert visit information (used during traversal) into a readable string.
+ * @param visitInfo - The visitation context from {@link Grid.traverse}.
+ * @returns A formatted string describing the visited point and path.
+ */
 export const visitInfoToString = <TGridData>(visitInfo: VisitInfo<TGridData>): string => {
   const { path, thisPointAndValue } = visitInfo;
   return `${pointAndValueToString(thisPointAndValue)} (path=${pathToString<TGridData>(path)})`;
@@ -62,10 +67,16 @@ export const visitInfoToString = <TGridData>(visitInfo: VisitInfo<TGridData>): s
  * @template TTraversalContext - Additional context merged into traversal callbacks.
  */
 export class Grid<TGridData, TTraversalContext extends Record<string, unknown> = {}> {
+  /**
+   * The number of columns currently represented in the grid.
+   */
   public get numCols() {
     return this.#numCols;
   }
 
+  /**
+   * The number of rows currently represented in the grid.
+   */
   public get numRows() {
     return this.#numRows;
   }
@@ -76,6 +87,15 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
 
   #numRows = 0;
 
+  /**
+   * Create a new grid from a 2D array of data.
+   * @param gridData - A rectangular or ragged matrix of values.
+   * @example
+   * const grid = new Grid([
+   *   [1, 2],
+   *   [3, 4],
+   * ]);
+   */
   public constructor(gridData: TGridData[][]) {
     this.#numRows = gridData.length;
 
@@ -94,6 +114,13 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
     }
   }
 
+  /**
+   * Retrieve the value stored at a point.
+   * @param point - The point to read (optional; `undefined` returns `undefined`).
+   * @returns The stored value, or `undefined` if out of bounds or empty.
+   * @example
+   * grid.at(new Point({ row: 0, col: 1 }));
+   */
   public at(point?: Point): TGridData | undefined {
     if (!point) {
       return undefined;
@@ -102,11 +129,21 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
     return this.#data.get(point.row)?.get(point.col);
   }
 
+  /**
+   * Check whether a point falls within the current grid bounds.
+   * @param point - The point to evaluate.
+   * @returns `true` if the point is inside the grid rectangle.
+   */
   public boundsContain(point: Point): boolean {
     const { col, row } = point;
     return row >= 0 && row < this.#numRows && col >= 0 && col < this.#numCols;
   }
 
+  /**
+   * Check whether a value exists at the given point.
+   * @param point - The point to check.
+   * @returns `true` if a value is present at the point.
+   */
   public exists(point: Point): boolean {
     const rowExists = this.#data.has(point.row);
     return rowExists && this.#data.get(point.row)!.has(point.col);
@@ -140,7 +177,13 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
     }
   }
 
-  // Make grid iterable (i.e. can use for...of)
+  /**
+   * Iterate over the populated cells in row-major order.
+   * @example
+   * for (const { point, value } of grid) {
+   *   // ...
+   * }
+   */
   *[Symbol.iterator]() {
     for (const row of this.#data.keys()) {
       for (const [col, value] of this.#data.get(row)!.entries()) {
