@@ -29,8 +29,8 @@ git add .
 if git diff --cached --quiet; then
   echo "No changes to commit in inputs; skipping inputs commit and push."
 else
-  git commit -m "[inputs] ${COMMIT_MESSAGE}"
-  git push
+  HUSKY=0 git commit -m "[inputs] ${COMMIT_MESSAGE}"
+  HUSKY=0 git push
 fi
 
 cd "${ROOT_DIR}"
@@ -45,6 +45,6 @@ git add .
 if git diff --cached --quiet; then
   echo "No changes to commit in main repo; skipping main commit and push."
 else
-  git commit -m "${COMMIT_MESSAGE}"
-  git push
+  HUSKY=0 git commit -m "${COMMIT_MESSAGE}"
+  HUSKY=0 git push
 fi
