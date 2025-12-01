@@ -6,7 +6,7 @@ type FindTransitionArgs<TValue> = {
 type FindTransitionFunction = <TValue = unknown>(args: FindTransitionArgs<TValue>) => number | undefined;
 
 /**
- * Get the mid-point of a numeric range – i.e. the next candidate for a binary search.
+ * Get the mid-point of a numeric range, i.e. the next candidate for a binary search.
  * @param start - The inclusive start of the range to be considered.
  * @param end - The inclusive end of the range to be considered.
  * @returns The mid-point of the range.
@@ -15,7 +15,7 @@ type FindTransitionFunction = <TValue = unknown>(args: FindTransitionArgs<TValue
  * // Basic odd-length range
  * getBinaryCandidate(4, 6); // => 5
  */
-export const getBinaryCandidate = (start: number, end: number) => {
+export const getMidpoint = (start: number, end: number) => {
   if (start === undefined || end === undefined || start > end) {
     throw new Error(`Range invalid (start=${start}, end=${end})`);
   }
@@ -44,7 +44,7 @@ export const findTransition: FindTransitionFunction = ({ array, predicate }) => 
   let transition: number | undefined;
   let pointer: number;
   while (start <= end) {
-    pointer = getBinaryCandidate(start, end);
+    pointer = getMidpoint(start, end);
     if (predicate(array[pointer]!, pointer, array)) {
       transition = pointer;
       end = pointer - 1;
@@ -54,67 +54,4 @@ export const findTransition: FindTransitionFunction = ({ array, predicate }) => 
   }
 
   return transition;
-};
-
-/**
- * Memoize a function that takes a single argument object.
- * Results are cached using `JSON.stringify(argsObject)` as the key, which
- * makes this helper ideal for pure, deterministic functions with simple
- * argument shapes (numbers, strings, plain objects).
- * When `countExecutions` is `true`, the returned function is augmented with
- * a `getCounts()` method that exposes how many times each unique argument
- * combination was evaluated.
- * @template Args - The shape of the single argument object accepted by the function.
- * @template Result - The returned type of the function.
- * @param functionToMemoize - The function whose results you want to cache.
- * @param countExecutions - When `true`, track how often each argument combination is evaluated.
- * @returns A memoized version of the function.
- * @example
- * // Basic memoization
- * const slowSquare = ({ value }: { value: number }) => {
- *   // pretend this is expensive
- *   return value * value;
- * };
- * const memoizedSquare = memoize(slowSquare);
- * memoizedSquare({ value: 5 }); // computes and caches
- * memoizedSquare({ value: 5 }); // returns cached value
- * @example
- * // With execution counts
- * const fn = ({ n }: { n: number }) => n * 2;
- * const tracked = memoize(fn, true) as typeof fn & { getCounts: () => Map<string, number> };
- *
- * tracked({ n: 1 });
- * tracked({ n: 1 });
- * tracked({ n: 2 });
- *
- * tracked.getCounts().get(JSON.stringify({ n: 1 })); // => 2
- */
-export const memoize = <Args, Result>(
-  functionToMemoize: (argsObject: Args) => Result,
-  countExecutions = false,
-): ((argsObject: Args) => Result) => {
-  const resultsMap = new Map<string, Result>();
-  const argumentCounts = countExecutions ? new Map<string, number>() : undefined;
-
-  const memoized = (argsObject: Args) => {
-    const argsString = JSON.stringify(argsObject);
-    if (!resultsMap.has(argsString)) {
-      resultsMap.set(argsString, functionToMemoize(argsObject));
-    }
-
-    if (countExecutions) {
-      const existingCount = argumentCounts!.get(argsString) ?? 0;
-      argumentCounts!.set(argsString, existingCount + 1);
-    }
-
-    return resultsMap.get(argsString)!;
-  };
-
-  if (countExecutions) {
-    Object.assign(memoized, {
-      getCounts: () => argumentCounts!,
-    });
-  }
-
-  return memoized;
 };

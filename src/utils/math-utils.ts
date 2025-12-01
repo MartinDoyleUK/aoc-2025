@@ -14,15 +14,7 @@ export const findGreatestCommonDivisor = (first: number, second: number): number
   return findGreatestCommonDivisor(second, first % second);
 };
 
-/**
- * Compute the lowest common multiple (LCM) of two integers.
- * @param first - The first integer.
- * @param second - The second integer.
- * @returns The lowest common multiple of `first` and `second`.
- * @example
- * getLowestCommonMultipleOfTwoNumbers(12, 18); // => 36
- */
-export const getLowestCommonMultipleOfTwoNumbers = (first: number, second: number) => {
+const getLowestCommonMultipleOfTwoNumbers = (first: number, second: number) => {
   const gcd = findGreatestCommonDivisor(first, second);
   return (first / gcd) * second;
 };

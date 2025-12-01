@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  findGreatestCommonDivisor,
-  getLowestCommonMultiple,
-  getLowestCommonMultipleOfTwoNumbers,
-} from './math-utils.js';
+import { findGreatestCommonDivisor, getLowestCommonMultiple } from './math-utils.js';
 
 describe('findGreatestCommonDenominator()', () => {
   it('should find GCD of two numbers', () => {
@@ -25,24 +21,6 @@ describe('findGreatestCommonDenominator()', () => {
 
   it('should handle coprime numbers', () => {
     expect(findGreatestCommonDivisor(17, 19)).toBe(1);
-  });
-});
-
-describe('getLowestCommonMultipleOfTwoNumbers()', () => {
-  it('should find LCM of two numbers', () => {
-    expect(getLowestCommonMultipleOfTwoNumbers(12, 18)).toBe(36);
-  });
-
-  it('should handle equal numbers', () => {
-    expect(getLowestCommonMultipleOfTwoNumbers(5, 5)).toBe(5);
-  });
-
-  it('should handle coprime numbers', () => {
-    expect(getLowestCommonMultipleOfTwoNumbers(7, 11)).toBe(77);
-  });
-
-  it('should handle when one divides the other', () => {
-    expect(getLowestCommonMultipleOfTwoNumbers(4, 12)).toBe(12);
   });
 });
 

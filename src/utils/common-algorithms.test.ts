@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { findTransition, getBinaryCandidate, memoize } from './common-algorithms.js';
+import { findTransition, getMidpoint } from './common-algorithms.js';
 
-describe('getBinaryCandidate()', () => {
+describe('getMidpoint()', () => {
   const testCases = [
     ['should find the mid-point of an odd-numbered range', 4, 6, 5],
     ['should go down to find the mid-point of an even-numbered range', 4, 7, 5],
@@ -11,7 +11,7 @@ describe('getBinaryCandidate()', () => {
   ];
 
   it.each(testCases)('%s', (_, start, end, expected) => {
-    const actual = getBinaryCandidate(start as number, end as number);
+    const actual = getMidpoint(start as number, end as number);
     expect(actual).toBe(expected as number);
   });
 
@@ -23,7 +23,7 @@ describe('getBinaryCandidate()', () => {
   ];
 
   it.each(errorTestCases)('%s', (_, start, end) => {
-    expect(() => getBinaryCandidate(start as number, end as number)).toThrow();
+    expect(() => getMidpoint(start as number, end as number)).toThrow();
   });
 });
 
@@ -82,59 +82,5 @@ describe('findTransition()', () => {
       { arrayLength: 3, index: 1, value: 0 },
       { arrayLength: 3, index: 2, value: 1 },
     ]);
-  });
-});
-
-describe('memoize()', () => {
-  it('should memoize function results', () => {
-    let callCount = 0;
-    const fn = (args: { x: number }) => {
-      callCount++;
-      return args.x * 2;
-    };
-
-    const memoized = memoize(fn);
-
-    expect(memoized({ x: 5 })).toBe(10);
-    expect(memoized({ x: 5 })).toBe(10);
-    expect(callCount).toBe(1); // Should only call original function once
-  });
-
-  it('should handle different arguments', () => {
-    const fn = (args: { x: number }) => args.x * 2;
-    const memoized = memoize(fn);
-
-    expect(memoized({ x: 5 })).toBe(10);
-    expect(memoized({ x: 10 })).toBe(20);
-    expect(memoized({ x: 5 })).toBe(10);
-  });
-
-  it('should count executions when countExecutions is true', () => {
-    const fn = (args: { x: number }) => args.x * 2;
-    const memoized = memoize(fn, true) as typeof fn & { getCounts: () => Map<string, number> };
-
-    memoized({ x: 5 });
-    memoized({ x: 5 });
-    memoized({ x: 10 });
-
-    const counts = memoized.getCounts();
-    expect(counts.get(JSON.stringify({ x: 5 }))).toBe(2);
-    expect(counts.get(JSON.stringify({ x: 10 }))).toBe(1);
-  });
-
-  it('should not have getCounts when countExecutions is false', () => {
-    const fn = (args: { x: number }) => args.x * 2;
-    const memoized = memoize(fn, false);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((memoized as any).getCounts).toBeUndefined();
-  });
-
-  it('should handle complex argument objects', () => {
-    const fn = (args: { a: number; b: string }) => `${args.a}-${args.b}`;
-    const memoized = memoize(fn);
-
-    expect(memoized({ a: 1, b: 'test' })).toBe('1-test');
-    expect(memoized({ a: 1, b: 'test' })).toBe('1-test');
   });
 });
