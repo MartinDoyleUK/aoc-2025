@@ -6,7 +6,6 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     coverage: {
-      all: true,
       exclude: [
         'src/puzzles/**',
         '**/types.ts',
@@ -17,7 +16,7 @@ export default defineConfig({
       ],
       include: ['src/utils/**/*.ts'],
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'text-summary'],
       thresholds: {
         branches: 100,
         functions: 100,

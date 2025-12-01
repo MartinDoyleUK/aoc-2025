@@ -40,6 +40,11 @@ describe('logging functions', () => {
       expect(console.info).toHaveBeenCalledWith(expect.stringContaining('42'));
     });
 
+    it('appends a question mark when expected is not provided', () => {
+      logAnswer({ answer: 123, partNum: 1, taskStartedAt: 0 });
+      expect(console.info).toHaveBeenCalledWith(expect.stringContaining('❔'));
+    });
+
     it('should format large numbers with commas', () => {
       logAnswer({ answer: 1_000_000, partNum: 1, taskStartedAt: 0 });
       expect(console.info).toHaveBeenCalledWith(expect.stringContaining('1,000,000'));

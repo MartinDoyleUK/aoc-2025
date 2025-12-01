@@ -74,7 +74,9 @@ export const logAnswer: LogAnswerFunction = ({ answer, expected: expectedParamet
     answerText = `Answer is ${answer}`;
   }
 
-  if (expectedParameter !== undefined) {
+  if (expectedParameter === undefined) {
+    answerText += '❔';
+  } else {
     let isExpected = answer === expectedParameter;
     if (typeof expectedParameter === 'function') {
       isExpected = expectedParameter(answer) === true;
