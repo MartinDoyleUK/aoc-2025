@@ -14,21 +14,18 @@ const sortStringsNumerically = (a: string, b: string) => {
 
 const run = async () => {
   const whichPuzzlesArg = process.argv.at(2)?.trim();
-  const puzzlesArgAsNum = Number(whichPuzzlesArg);
+
+  if (!whichPuzzlesArg) {
+    throw new Error('Must supply one of "latest", "all" or a valid puzzle number');
+  }
+
   let puzzleArgIsNum = false;
   let whichPuzzles: 'all' | 'latest' | number;
-  if (whichPuzzlesArg === undefined) {
-    whichPuzzles = 'latest';
-  } else if (Number.isNaN(puzzlesArgAsNum)) {
-    if (whichPuzzlesArg !== 'all' && whichPuzzlesArg !== 'latest') {
-      throw new Error(
-        `Must supply one of "latest", "all" or valid puzzle number (was called with "${whichPuzzlesArg}")`,
-      );
-    }
-
+  if (whichPuzzlesArg === 'all' || whichPuzzlesArg === 'latest') {
     whichPuzzles = whichPuzzlesArg;
   } else {
-    if (Math.round(puzzlesArgAsNum) !== puzzlesArgAsNum || puzzlesArgAsNum < 1 || puzzlesArgAsNum > 999) {
+    const puzzlesArgAsNum = Number(whichPuzzlesArg);
+    if (!Number.isSafeInteger(puzzlesArgAsNum) || puzzlesArgAsNum < 1 || puzzlesArgAsNum > 12) {
       throw new Error(
         `Must supply one of "latest", "all" or valid puzzle number (was called with "${whichPuzzlesArg}")`,
       );

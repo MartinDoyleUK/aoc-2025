@@ -43,7 +43,7 @@
     "sub:pull": "git submodule update --remote --merge",
     "=============== RUNNING ===============": "",
     "dev": "nodemon --config bin/nodemon/dev.json",
-    "solve": "node dist/index.js",
+    "solve": "pnpm build && node dist/index.js",
     "start": "run-s build:clean \"solve all\"",
     "watch": "pnpm clean && pnpm build:watch"
   },

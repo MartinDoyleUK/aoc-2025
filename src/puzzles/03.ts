@@ -103,7 +103,7 @@ const runTwo = () => {
 
   logAnswer({
     answer: totalJoltage,
-    expected: USE_TEST_DATA ? 3_121_910_778_619 : undefined,
+    expected: USE_TEST_DATA ? 3_121_910_778_619 : 170_449_335_646_486,
     partNum: 2,
     taskStartedAt,
   });

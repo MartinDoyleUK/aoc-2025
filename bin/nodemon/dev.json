@@ -2,9 +2,7 @@
   "events": {
     "start": "printf '\\e[2J\\e[3J\\e[H'"
   },
-  "execMap": {
-    "js": "node --experimental-specifier-resolution=node --no-warnings"
-  },
+  "exec": "node --experimental-specifier-resolution=node --no-warnings dist/index.js latest",
   "ext": "js,json,txt",
   "restartable": "rs",
   "verbose": false,

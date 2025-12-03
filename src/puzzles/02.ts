@@ -82,7 +82,7 @@ const runTwo = () => {
 
   logAnswer({
     answer: sumInvalidIds,
-    expected: USE_TEST_DATA ? 4_174_379_265 : undefined,
+    expected: USE_TEST_DATA ? 4_174_379_265 : 58_961_152_806,
     partNum: 2,
     taskStartedAt,
   });
