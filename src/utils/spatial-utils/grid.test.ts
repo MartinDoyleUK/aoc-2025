@@ -84,6 +84,70 @@ describe('Grid', () => {
     });
   });
 
+  describe('getNeighbours()', () => {
+    it('should return all cardinal neighbours for center point', () => {
+      const point = new Point({ col: 1, row: 1 });
+      const neighbours = grid.getNeighbours(point, [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W]);
+
+      expect(neighbours).toHaveLength(4);
+      expect(neighbours.map((n) => n.value)).toEqual([2, 6, 8, 4]);
+    });
+
+    it('should filter out-of-bounds neighbours for corner point', () => {
+      const point = new Point({ col: 0, row: 0 });
+      const neighbours = grid.getNeighbours(point, [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W]);
+
+      expect(neighbours).toHaveLength(2);
+      expect(neighbours.map((n) => n.value)).toEqual([2, 4]);
+    });
+
+    it('should filter out-of-bounds neighbours for edge point', () => {
+      const point = new Point({ col: 1, row: 0 });
+      const neighbours = grid.getNeighbours(point, [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W]);
+
+      expect(neighbours).toHaveLength(3);
+      expect(neighbours.map((n) => n.value)).toEqual([3, 5, 1]);
+    });
+
+    it('should work with diagonal directions', () => {
+      const point = new Point({ col: 1, row: 1 });
+      const neighbours = grid.getNeighbours(point, [VECTORS.NE, VECTORS.SE, VECTORS.SW, VECTORS.NW]);
+
+      expect(neighbours).toHaveLength(4);
+      expect(neighbours.map((n) => n.value)).toEqual([3, 9, 7, 1]);
+    });
+
+    it('should work with single direction', () => {
+      const point = new Point({ col: 1, row: 1 });
+      const neighbours = grid.getNeighbours(point, [VECTORS.N]);
+
+      expect(neighbours).toHaveLength(1);
+      expect(neighbours[0]!.value).toBe(2);
+      expect(neighbours[0]!.point.row).toBe(0);
+      expect(neighbours[0]!.point.col).toBe(1);
+    });
+
+    it('should return empty array when all neighbours are out of bounds', () => {
+      const smallGrid = new Grid([[1]]);
+      const point = new Point({ col: 0, row: 0 });
+      const neighbours = smallGrid.getNeighbours(point, [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W]);
+
+      expect(neighbours).toHaveLength(0);
+    });
+
+    it('should include point and value in returned neighbours', () => {
+      const point = new Point({ col: 1, row: 1 });
+      const neighbours = grid.getNeighbours(point, [VECTORS.N]);
+
+      expect(neighbours[0]).toEqual({
+        point: expect.any(Point),
+        value: 2,
+      });
+      expect(neighbours[0]!.point.row).toBe(0);
+      expect(neighbours[0]!.point.col).toBe(1);
+    });
+  });
+
   describe('iterator', () => {
     it('should iterate over all grid points', () => {
       const values: number[] = [];

@@ -15,30 +15,30 @@ type GridTraversalFn<TCustomContext, TGridData> = (
   },
 ) => StandardTraversalContext & TCustomContext;
 
+type PointAndValue<TGridData> = {
+  point: Point;
+  value?: TGridData;
+};
+
 type StandardTraversalContext = {
   directions: Vector[];
   globalVisited: Set<string>;
 };
 
 type VisitInfo<TGridData> = {
-  path: VisitPointAndValue<TGridData>[];
+  path: PointAndValue<TGridData>[];
   thisPathVisited: Set<string>;
-  thisPointAndValue: VisitPointAndValue<TGridData>;
-};
-
-type VisitPointAndValue<TGridData> = {
-  point: Point;
-  value?: TGridData;
+  thisPointAndValue: PointAndValue<TGridData>;
 };
 
 type VisitResult = { abort: boolean; visitNeighbours: boolean };
 
-const pointAndValueToString = <TGridData>(pointAndValue: VisitPointAndValue<TGridData>): string => {
+const pointAndValueToString = <TGridData>(pointAndValue: PointAndValue<TGridData>): string => {
   const { point, value } = pointAndValue;
   return `${point.row},${point.col}=${value}`;
 };
 
-const pathToString = <TGridData>(path: VisitPointAndValue<TGridData>[]): string => {
+const pathToString = <TGridData>(path: PointAndValue<TGridData>[]): string => {
   if (!path || path.length === 0) {
     return '<empty>';
   }
@@ -147,6 +147,27 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
   public exists(point: Point): boolean {
     const rowExists = this.#data.has(point.row);
     return rowExists && this.#data.get(point.row)!.has(point.col);
+  }
+
+  /**
+   * Get all valid neighbours of a point in the specified directions.
+   * Only neighbours that fall within the grid bounds are returned.
+   * @param point - The point whose neighbours to retrieve.
+   * @param directions - The directional vectors to check (e.g., cardinal or diagonal directions).
+   * @returns An array of neighbour points and their values, filtered to only include points within bounds.
+   * @example
+   * const neighbours = grid.getNeighbours(
+   *   new Point({ row: 1, col: 1 }),
+   *   [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W]
+   * );
+   */
+  public getNeighbours(point: Point, directions: Vector[]): PointAndValue<TGridData>[] {
+    const neighbourPoints = point.neighbours(directions);
+    const validPoints = neighbourPoints.filter((nextPoint) => this.boundsContain(nextPoint));
+    return validPoints.map((neighbour) => ({
+      point: neighbour,
+      value: this.at(neighbour),
+    }));
   }
 
   /**
