@@ -305,7 +305,6 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
       });
 
       if (debug) {
-        // eslint-disable-next-line no-console
         console.log(`Visiting ${visitInfoToString(visitInfo)} ... ${visitResult.visitNeighbours ? '✅' : '❌'}`);
       }
 

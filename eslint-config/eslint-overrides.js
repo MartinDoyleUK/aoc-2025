@@ -12,5 +12,6 @@ export const overrides = {
     '@typescript-eslint/array-type': OFF,
     '@typescript-eslint/no-non-null-assertion': OFF,
     'id-length': OFF,
+    'no-console': OFF,
   },
 };

@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import chalk from 'chalk';
 import _ from 'lodash';
 import numberToWords from 'number-to-words';
@@ -75,7 +73,7 @@ export const logAnswer: LogAnswerFunction = ({ answer, expected: expectedParamet
   }
 
   if (expectedParameter === undefined) {
-    answerText += '❔';
+    answerText += ' ❔';
   } else {
     let isExpected = answer === expectedParameter;
     if (typeof expectedParameter === 'function') {

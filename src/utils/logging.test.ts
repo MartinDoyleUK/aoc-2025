@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { logAnswer, logComplete, logError, logInfo, logPuzzleDay, logStart, logTime } from './logging.js';
