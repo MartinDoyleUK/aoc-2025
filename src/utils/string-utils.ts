@@ -16,13 +16,16 @@ export const reverseString = (input: string): string => {
 
 /**
  * Parse a multi-line string into an array of non-empty, trimmed lines.
+ * Handles both Unix (\n) and Windows (\r\n) line endings.
  * @param input - The raw input string.
  * @returns An array of trimmed, non-empty lines.
  * @example
  * parseLines('  foo  \n\n  bar  '); // => ['foo', 'bar']
+ * parseLines('  foo  \r\n\r\n  bar  '); // => ['foo', 'bar']
  */
 export const parseLines = (input: string): string[] =>
   input
-    .split('\n')
+    .trim()
+    .split(/\r?\n/u)
     .map((line) => line.trim())
     .filter((line) => line.length > 0);

@@ -171,7 +171,10 @@ const runTwo = () => {
     updatedRanges.push(startRange);
   }
 
-  const numIds = updatedRanges.reduce((prev, [lower, upper]) => prev + (upper - lower) + 1, 0);
+  const numIds = updatedRanges.reduce(
+    (prev, [lower, upper]) => prev + (upper - lower) + 1,
+    0,
+  );
 
   logAnswer({
     answer: numIds,

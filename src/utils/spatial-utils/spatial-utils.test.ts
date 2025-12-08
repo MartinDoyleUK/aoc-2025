@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import { Grid } from './grid.js';
-import { linesToCustomGrid, linesToNumberGrid, linesToStringGrid, POINT_REGEX } from './spatial-utils.js';
+import {
+  linesToCustomGrid,
+  linesToNumberGrid,
+  linesToStringGrid,
+  POINT_REGEX,
+} from './spatial-utils.js';
 
 describe('POINT_REGEX', () => {
   it('should match valid point format', () => {

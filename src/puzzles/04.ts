@@ -1,4 +1,11 @@
-import { ALL_VECTORS, getDataForPuzzle, type Grid, linesToStringGrid, logAnswer, type Point } from '../utils/index.js';
+import {
+  ALL_VECTORS,
+  getDataForPuzzle,
+  type Grid,
+  linesToStringGrid,
+  logAnswer,
+  type Point,
+} from '../utils/index.js';
 
 // Toggle this to use test or real data
 const USE_TEST_DATA = false;

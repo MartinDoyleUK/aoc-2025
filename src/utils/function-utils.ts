@@ -45,7 +45,9 @@ export const memoize = <Args, Result>(
   countExecutions = false,
 ): ((argsObject: Args) => Result) => {
   const resultsMap = new Map<string, Result>();
-  const argumentCounts = countExecutions ? new Map<string, number>() : undefined;
+  const argumentCounts = countExecutions
+    ? new Map<string, number>()
+    : undefined;
 
   const memoized = (argsObject: Args) => {
     const argsString = JSON.stringify(argsObject);

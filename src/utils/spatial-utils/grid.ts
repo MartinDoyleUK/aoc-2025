@@ -11,7 +11,9 @@ type GridTraversalFn<TCustomContext, TGridData> = (
     debug?: boolean;
     directions?: Vector[];
     multipath: boolean;
-    onVisit: (info: StandardTraversalContext & TCustomContext & VisitInfo<TGridData>) => VisitResult;
+    onVisit: (
+      info: StandardTraversalContext & TCustomContext & VisitInfo<TGridData>,
+    ) => VisitResult;
   },
 ) => StandardTraversalContext & TCustomContext;
 
@@ -33,7 +35,9 @@ type VisitInfo<TGridData> = {
 
 type VisitResult = { abort: boolean; visitNeighbours: boolean };
 
-const pointAndValueToString = <TGridData>(pointAndValue: PointAndValue<TGridData>): string => {
+const pointAndValueToString = <TGridData>(
+  pointAndValue: PointAndValue<TGridData>,
+): string => {
   const { point, value } = pointAndValue;
   return `${point.row},${point.col}=${value}`;
 };
@@ -51,7 +55,9 @@ const pathToString = <TGridData>(path: PointAndValue<TGridData>[]): string => {
  * @param visitInfo - The visitation context from {@link Grid.traverse}.
  * @returns A formatted string describing the visited point and path.
  */
-export const visitInfoToString = <TGridData>(visitInfo: VisitInfo<TGridData>): string => {
+export const visitInfoToString = <TGridData>(
+  visitInfo: VisitInfo<TGridData>,
+): string => {
   const { path, thisPointAndValue } = visitInfo;
   return `${pointAndValueToString(thisPointAndValue)} (path=${pathToString<TGridData>(path)})`;
 };
@@ -66,7 +72,10 @@ export const visitInfoToString = <TGridData>(visitInfo: VisitInfo<TGridData>): s
  * @template TGridData - The type stored at each grid cell.
  * @template TTraversalContext - Additional context merged into traversal callbacks.
  */
-export class Grid<TGridData, TTraversalContext extends Record<string, unknown> = {}> {
+export class Grid<
+  TGridData,
+  TTraversalContext extends Record<string, unknown> = {},
+> {
   /**
    * The number of columns currently represented in the grid.
    */
@@ -161,9 +170,14 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
    *   [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W]
    * );
    */
-  public getNeighbours(point: Point, directions: Vector[]): PointAndValue<TGridData>[] {
+  public getNeighbours(
+    point: Point,
+    directions: Vector[],
+  ): PointAndValue<TGridData>[] {
     const neighbourPoints = point.neighbours(directions);
-    const validPoints = neighbourPoints.filter((nextPoint) => this.boundsContain(nextPoint));
+    const validPoints = neighbourPoints.filter((nextPoint) =>
+      this.boundsContain(nextPoint),
+    );
     return validPoints.map((neighbour) => ({
       point: neighbour,
       value: this.at(neighbour),
@@ -181,7 +195,9 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
    */
   public set(point: Point, value: TGridData, strictBounds = false): void {
     if (strictBounds && !this.boundsContain(point)) {
-      throw new Error(`Point ${point.toString()} is out of bounds (grid is ${this.#numRows}x${this.#numCols})`);
+      throw new Error(
+        `Point ${point.toStr()} is out of bounds (grid is ${this.#numRows}x${this.#numCols})`,
+      );
     }
 
     const rowMap = this.#data.get(point.row) ?? new Map<number, TGridData>();
@@ -305,7 +321,9 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
       });
 
       if (debug) {
-        console.log(`Visiting ${visitInfoToString(visitInfo)} ... ${visitResult.visitNeighbours ? '✅' : '❌'}`);
+        console.log(
+          `Visiting ${visitInfoToString(visitInfo)} ... ${visitResult.visitNeighbours ? '✅' : '❌'}`,
+        );
       }
 
       return visitResult;
@@ -319,7 +337,8 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
       },
     ];
 
-    const getNextPoint = traversalType === 'bfs' ? () => toVisit.shift() : () => toVisit.pop();
+    const getNextPoint =
+      traversalType === 'bfs' ? () => toVisit.shift() : () => toVisit.pop();
 
     let thisVisit: undefined | VisitInfo<TGridData>;
     while ((thisVisit = getNextPoint()) !== undefined) {
@@ -327,27 +346,38 @@ export class Grid<TGridData, TTraversalContext extends Record<string, unknown> =
         thisPathVisited,
         thisPointAndValue: { point },
       } = thisVisit;
-      const canVisit = multipath ? !thisPathVisited.has(point.toString()) : !globalVisited.has(point.toString());
+      const canVisit = multipath
+        ? !thisPathVisited.has(point.toStr())
+        : !globalVisited.has(point.toStr());
       if (canVisit) {
-        globalVisited.add(point.toString());
+        globalVisited.add(point.toStr());
         const { abort, visitNeighbours } = visit(thisVisit);
         if (abort) {
           break;
         } else if (visitNeighbours) {
-          thisPathVisited.add(point.toString());
+          thisPathVisited.add(point.toStr());
           for (const nextDir of directions) {
             const { path } = thisVisit;
             const nextNeighbour = point.applyVector(nextDir);
             const nextNeighbourValue = this.at(nextNeighbour);
             const newPath = [
               ...path,
-              { point: thisVisit.thisPointAndValue.point, value: thisVisit.thisPointAndValue.value },
+              {
+                point: thisVisit.thisPointAndValue.point,
+                value: thisVisit.thisPointAndValue.value,
+              },
             ];
-            if (!thisPathVisited.has(nextNeighbour.toString()) && this.boundsContain(nextNeighbour)) {
+            if (
+              !thisPathVisited.has(nextNeighbour.toStr()) &&
+              this.boundsContain(nextNeighbour)
+            ) {
               toVisit.push({
                 path: newPath,
                 thisPathVisited: new Set(thisPathVisited),
-                thisPointAndValue: { point: nextNeighbour, value: nextNeighbourValue },
+                thisPointAndValue: {
+                  point: nextNeighbour,
+                  value: nextNeighbourValue,
+                },
               });
             }
           }

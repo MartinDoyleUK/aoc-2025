@@ -15,7 +15,9 @@ const runOne = () => {
     .map((line) => line.trim())
     .find((line) => line.length > 0);
 
-  const ranges = firstLine!.split(',').map((range) => range.split('-').map(Number) as [number, number]);
+  const ranges = firstLine!
+    .split(',')
+    .map((range) => range.split('-').map(Number) as [number, number]);
   const invalidIds: number[] = [];
   for (const range of ranges) {
     for (let idNum = range[0]; idNum <= range[1]; idNum++) {
@@ -54,7 +56,9 @@ const runTwo = () => {
     for (let numRepeats = 2; numRepeats <= len; numRepeats++) {
       if (len % numRepeats === 0) {
         const repeatStr = idStr.slice(0, len / numRepeats);
-        const candidate = Array.from({ length: numRepeats }).fill(repeatStr).join('');
+        const candidate = Array.from({ length: numRepeats })
+          .fill(repeatStr)
+          .join('');
         // console.log({ candidate, idNum, numRepeats, repeatStr });
         if (candidate === idStr) {
           isRepeated = true;
@@ -68,7 +72,9 @@ const runTwo = () => {
     return isRepeated;
   };
 
-  const ranges = firstLine!.split(',').map((range) => range.split('-').map(Number) as [number, number]);
+  const ranges = firstLine!
+    .split(',')
+    .map((range) => range.split('-').map(Number) as [number, number]);
   const invalidIds: number[] = [];
   for (const range of ranges) {
     for (let idNum = range[0]; idNum <= range[1]; idNum++) {

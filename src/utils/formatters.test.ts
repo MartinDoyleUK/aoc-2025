@@ -14,7 +14,9 @@ describe('formatNum()', () => {
   });
 
   it('formats using custom options', () => {
-    expect(formatNum(12.345, { maximumFractionDigits: 2, minimumFractionDigits: 2 })).toBe('12.35');
+    expect(
+      formatNum(12.345, { maximumFractionDigits: 2, minimumFractionDigits: 2 }),
+    ).toBe('12.35');
   });
 });
 

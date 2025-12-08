@@ -33,16 +33,20 @@ describe('Point', () => {
     it('should throw error for Symbol without description', () => {
       // eslint-disable-next-line symbol-description
       const symbol = Symbol();
-      expect(() => new Point(symbol)).toThrow('Supplied Symbol has no description');
+      expect(() => new Point(symbol)).toThrow(
+        'Supplied Symbol has no description',
+      );
     });
 
     it('should throw error for invalid string format', () => {
-      expect(() => new Point('invalid')).toThrow('Cannot convert "invalid" to Point');
+      expect(() => new Point('invalid')).toThrow(
+        'Cannot convert "invalid" to Point',
+      );
     });
 
     it('should round-trip via toString()', () => {
       const original = new Point({ col: -3, row: 7 });
-      const clone = new Point(original.toString());
+      const clone = new Point(original.toStr());
       expect(clone.col).toBe(-3);
       expect(clone.row).toBe(7);
     });
@@ -92,6 +96,46 @@ describe('Point', () => {
       const a = new Point({ col: 7, row: 5 });
       const b = new Point({ col: 3, row: 5 });
       expect(Point.compare(a, b)).toBe(1);
+    });
+  });
+
+  describe('static factory methods', () => {
+    it('should create point from fromColRow', () => {
+      const point = Point.fromColRow(3, 7);
+      expect(point.col).toBe(3);
+      expect(point.row).toBe(7);
+    });
+
+    it('should create point from fromString', () => {
+      const point = Point.fromString('7,3');
+      expect(point.col).toBe(3);
+      expect(point.row).toBe(7);
+    });
+
+    it('should create point from fromId', () => {
+      const id = Symbol.for('7,3');
+      const point = Point.fromId(id);
+      expect(point.col).toBe(3);
+      expect(point.row).toBe(7);
+    });
+  });
+
+  describe('equals()', () => {
+    it('should return true for equal points', () => {
+      const a = new Point({ col: 5, row: 10 });
+      const b = new Point({ col: 5, row: 10 });
+      expect(a.equals(b)).toBe(true);
+    });
+
+    it('should return false for different points', () => {
+      const a = new Point({ col: 5, row: 10 });
+      const b = new Point({ col: 3, row: 7 });
+      expect(a.equals(b)).toBe(false);
+    });
+
+    it('should return true when comparing point to itself', () => {
+      const a = new Point({ col: 5, row: 10 });
+      expect(a.equals(a)).toBe(true);
     });
   });
 
@@ -148,14 +192,19 @@ describe('Point', () => {
     it('should return cardinal neighbours in order N,E,S,W by default', () => {
       const point = new Point({ col: 2, row: 2 });
       const neighbours = point.neighbours();
-      expect(neighbours.map((p) => p.toString())).toEqual(['1,2', '2,3', '3,2', '2,1']);
+      expect(neighbours.map((p) => p.toStr())).toEqual([
+        '1,2',
+        '2,3',
+        '3,2',
+        '2,1',
+      ]);
     });
   });
 
   describe('toString()', () => {
     it('should convert to string', () => {
       const point = new Point({ col: 5, row: 10 });
-      expect(point.toString()).toBe('10,5');
+      expect(point.toStr()).toBe('10,5');
     });
   });
 

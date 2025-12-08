@@ -57,7 +57,12 @@ Running ${dayWords} day of Advent of Code ...`),
  *   taskStartedAt: performance.now(),
  * });
  */
-export const logAnswer: LogAnswerFunction = ({ answer, expected: expectedParameter, partNum, taskStartedAt }) => {
+export const logAnswer: LogAnswerFunction = ({
+  answer,
+  expected: expectedParameter,
+  partNum,
+  taskStartedAt,
+}) => {
   const timeTaken = timeSinceStarted(taskStartedAt);
   const partText = `${_.capitalize(numberToWords.toWordsOrdinal(partNum))} part took ${timeTaken}`;
   let answerText: string;
@@ -86,10 +91,18 @@ export const logAnswer: LogAnswerFunction = ({ answer, expected: expectedParamet
     }
 
     const colourFunction = isExpected ? chalk.reset.green : chalk.reset.red;
-    answerText += colourFunction(isExpected ? ' ✅' : ` ❌ (should equal ${JSON.stringify(expectedDisplayValue)})`);
+    answerText += colourFunction(
+      isExpected
+        ? ' ✅'
+        : ` ❌ (should equal ${JSON.stringify(expectedDisplayValue)})`,
+    );
   }
 
-  const messageParts = [chalk.bold.cyan(partText), '➡️ ', chalk.bold.yellow(answerText)];
+  const messageParts = [
+    chalk.bold.cyan(partText),
+    '➡️ ',
+    chalk.bold.yellow(answerText),
+  ];
   console.info(messageParts.join(' '));
 };
 
@@ -100,7 +113,11 @@ export const logAnswer: LogAnswerFunction = ({ answer, expected: expectedParamet
  */
 export const logTime = (before: number, dayString: string) => {
   const timeTaken = timeSinceStarted(before);
-  console.info(chalk.green(`Took ${timeTaken} to run all tasks for day ${numberToWords.toWords(dayString)}`));
+  console.info(
+    chalk.green(
+      `Took ${timeTaken} to run all tasks for day ${numberToWords.toWords(dayString)}`,
+    ),
+  );
 };
 
 /**

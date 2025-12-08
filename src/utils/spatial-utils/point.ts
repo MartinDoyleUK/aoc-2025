@@ -22,7 +22,7 @@ export class Point {
    * Stable symbol identifier based on the point string representation.
    */
   public get id(): Symbol {
-    return Symbol.for(this.toString());
+    return Symbol.for(this.toStr());
   }
 
   /**
@@ -88,6 +88,18 @@ export class Point {
     }
   }
 
+  public static fromColRow(col: number, row: number): Point {
+    return new Point({ col, row });
+  }
+
+  public static fromId(id: Symbol): Point {
+    return new Point(id);
+  }
+
+  public static fromString(id: string): Point {
+    return new Point(id);
+  }
+
   /**
    * Move the point by a vector.
    * @param vector - The vector to apply.
@@ -101,6 +113,10 @@ export class Point {
     const newRow = reverse ? this.#row - vector.row : this.#row + vector.row;
 
     return new Point({ col: newCol, row: newRow });
+  }
+
+  public equals(other: Point): boolean {
+    return Point.compare(this, other) === 0;
   }
 
   /**
@@ -144,14 +160,14 @@ export class Point {
    * @returns `"Point(row,col)"`.
    */
   public toJSON(): string {
-    return `Point(${this.toString()})`;
+    return `Point(${this.toStr()})`;
   }
 
   /**
    * Convert the point to `"row,col"` form.
    * @returns The coordinate string.
    */
-  public toString(): string {
+  public toStr(): string {
     return `${this.#row},${this.#col}`;
   }
 }

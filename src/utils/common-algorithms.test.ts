@@ -32,7 +32,11 @@ describe('findTransition()', () => {
     ['should find transition from 0 to 1 in array', [0, 0, 0, 1, 1, 1], 3],
     ['should find transition at start of array', [1, 1, 1, 1], 0],
     ['should find transition at end of array', [0, 0, 0, 1], 3],
-    ['should return undefined when no transition exists (all zeros)', [0, 0, 0, 0], undefined],
+    [
+      'should return undefined when no transition exists (all zeros)',
+      [0, 0, 0, 0],
+      undefined,
+    ],
     ['should find transition in middle of array', [0, 0, 1, 1], 2],
     ['should handle single element array with 1', [1], 0],
     ['should handle single element array with 0', [0], undefined],
@@ -45,9 +49,19 @@ describe('findTransition()', () => {
   });
 
   const derivedTestCases: Array<
-    [string, readonly number[], (value: number, index: number, array: readonly number[]) => boolean, number]
+    [
+      string,
+      readonly number[],
+      (value: number, index: number, array: readonly number[]) => boolean,
+      number,
+    ]
   > = [
-    ['should find transition using derived values', [1, 3, 5, 7, 9], (value) => value >= 5, 2],
+    [
+      'should find transition using derived values',
+      [1, 3, 5, 7, 9],
+      (value) => value >= 5,
+      2,
+    ],
     [
       'should find transition where the candidate jumps the transition point',
       Array.from({ length: 100 }, (_, index) => index + 1),
@@ -68,7 +82,8 @@ describe('findTransition()', () => {
   });
 
   it('passes value, index and array to predicate', () => {
-    const calls: Array<{ arrayLength: number; index: number; value: number }> = [];
+    const calls: Array<{ arrayLength: number; index: number; value: number }> =
+      [];
     const actual = findTransition({
       array: [0, 0, 1],
       predicate: (value, index, array) => {

@@ -7,7 +7,7 @@ const [, canonicalPrettierRules] = prettierConfig.rules['prettier/prettier'];
 
 /** @type {import('prettier').Options} */
 const prettierOverrides = {
-  printWidth: 120,
+  printWidth: 80,
 };
 
 /** @type {import('eslint').Linter.Config} */

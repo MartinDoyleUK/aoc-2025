@@ -26,10 +26,22 @@ describe('getDataForPuzzle()', () => {
     });
 
     expect(mockReadFileSync).toHaveBeenCalledTimes(3);
-    expect(mockReadFileSync).toHaveBeenCalledWith(expect.stringContaining('01'), 'utf8');
-    expect(mockReadFileSync).toHaveBeenCalledWith(expect.stringContaining('data.txt'), 'utf8');
-    expect(mockReadFileSync).toHaveBeenCalledWith(expect.stringContaining('test-data-01.txt'), 'utf8');
-    expect(mockReadFileSync).toHaveBeenCalledWith(expect.stringContaining('test-data-02.txt'), 'utf8');
+    expect(mockReadFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('01'),
+      'utf8',
+    );
+    expect(mockReadFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('data.txt'),
+      'utf8',
+    );
+    expect(mockReadFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('test-data-01.txt'),
+      'utf8',
+    );
+    expect(mockReadFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('test-data-02.txt'),
+      'utf8',
+    );
   });
 
   it('should handle different day numbers', () => {
@@ -38,7 +50,10 @@ describe('getDataForPuzzle()', () => {
 
     getDataForPuzzle('file:///path/to/puzzles/25.js');
 
-    expect(mockReadFileSync).toHaveBeenCalledWith(expect.stringContaining('25'), 'utf8');
+    expect(mockReadFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('25'),
+      'utf8',
+    );
   });
 
   it('should extract day number from filename correctly', () => {
@@ -47,12 +62,15 @@ describe('getDataForPuzzle()', () => {
 
     getDataForPuzzle('file:///different/path/with/numbers/123/puzzles/09.js');
 
-    expect(mockReadFileSync).toHaveBeenCalledWith(expect.stringContaining('09'), 'utf8');
+    expect(mockReadFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('09'),
+      'utf8',
+    );
   });
 
   it('should throw if the filename does not contain a day number', () => {
-    expect(() => getDataForPuzzle('file:///path/to/puzzles/not-a-day.js')).toThrow(
-      'Could not extract day number from puzzle filename',
-    );
+    expect(() =>
+      getDataForPuzzle('file:///path/to/puzzles/not-a-day.js'),
+    ).toThrow('Could not extract day number from puzzle filename');
   });
 });

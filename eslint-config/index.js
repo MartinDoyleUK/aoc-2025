@@ -8,4 +8,12 @@ import { overrides as eslintOverrides } from './eslint-overrides.js';
 import { overrides as unicorn } from './unicorn.js';
 
 /** @type {import('eslint').Linter.Config[]} */
-export const projectConfig = [canonical, packageJson, prettier, importConfig, perfectionist, eslintOverrides, unicorn];
+export const projectConfig = [
+  canonical,
+  packageJson,
+  prettier,
+  importConfig,
+  perfectionist,
+  eslintOverrides,
+  unicorn,
+];

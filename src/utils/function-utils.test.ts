@@ -42,7 +42,9 @@ describe('memoize()', () => {
 
   it('should count executions when countExecutions is true', () => {
     const fn = (args: { x: number }) => args.x * 2;
-    const memoized = memoize(fn, true) as typeof fn & { getCounts: () => Map<string, number> };
+    const memoized = memoize(fn, true) as typeof fn & {
+      getCounts: () => Map<string, number>;
+    };
 
     memoized({ x: 5 });
     memoized({ x: 5 });

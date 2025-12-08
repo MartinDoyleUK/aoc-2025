@@ -4,14 +4,19 @@ type FormatOptions = FormatPreset | Intl.NumberFormatOptions;
 type FormatPreset = 'oneDP' | 'rounded';
 
 const LOCALE = 'en-GB';
-const PRESETS: Record<Extract<FormatPreset, FormatPreset>, Intl.NumberFormatOptions> = {
+const PRESETS: Record<
+  Extract<FormatPreset, FormatPreset>,
+  Intl.NumberFormatOptions
+> = {
   oneDP: { maximumFractionDigits: 1 },
   rounded: { maximumFractionDigits: 0 },
 };
 
 const formatterCache = new Map<string, Intl.NumberFormat>();
 
-const getFormatter = (options?: Intl.NumberFormatOptions): Intl.NumberFormat => {
+const getFormatter = (
+  options?: Intl.NumberFormatOptions,
+): Intl.NumberFormat => {
   const cacheKey = JSON.stringify(options ?? {});
   const cached = formatterCache.get(cacheKey);
   if (cached) {
@@ -23,7 +28,9 @@ const getFormatter = (options?: Intl.NumberFormatOptions): Intl.NumberFormat => 
   return formatter;
 };
 
-const resolveOptions = (formatOptions?: FormatOptions): Intl.NumberFormatOptions | undefined => {
+const resolveOptions = (
+  formatOptions?: FormatOptions,
+): Intl.NumberFormatOptions | undefined => {
   if (formatOptions === undefined) {
     return undefined;
   }
@@ -45,7 +52,10 @@ const resolveOptions = (formatOptions?: FormatOptions): Intl.NumberFormatOptions
  * formatNum(1234.56, 'rounded'); // "1,235"
  * formatNum(12.34, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); // "12.34"
  */
-export const formatNum = (value: number, formatOptions?: FormatOptions): string => {
+export const formatNum = (
+  value: number,
+  formatOptions?: FormatOptions,
+): string => {
   const formatter = getFormatter(resolveOptions(formatOptions));
   return formatter.format(value);
 };
@@ -88,9 +98,9 @@ export const timeSinceStarted = (timeStarted: number) => {
     return formatNum((now - timeStarted) / 1_000, 'oneDP') + 'secs';
   }
 
-  const startDate = new Date(timeStarted);
-  const endDate = new Date(now);
-  const duration = intervalToDuration({ end: endDate, start: startDate });
+  // Calculate duration from milliseconds difference
+  const durationMs = now - timeStarted;
+  const duration = intervalToDuration({ end: durationMs, start: 0 });
 
   return formatDuration(duration);
 };

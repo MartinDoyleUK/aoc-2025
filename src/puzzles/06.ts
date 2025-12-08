@@ -14,7 +14,10 @@ const runOne = () => {
   const lines = dataToUse.split('\n').filter((line) => line.trim().length > 0);
 
   const colOffsetLens: [number, number][] = [];
-  const minLinLen = lines.reduce((prev, next) => Math.min(prev, next.length), Number.MAX_SAFE_INTEGER);
+  const minLinLen = lines.reduce(
+    (prev, next) => Math.min(prev, next.length),
+    Number.MAX_SAFE_INTEGER,
+  );
   let lastSpace = 0;
   for (let i = 0; i < minLinLen; i++) {
     if (lines.every((nextLine) => nextLine.at(i) === ' ')) {
@@ -68,7 +71,10 @@ const runTwo = () => {
   const lines = dataToUse.split('\n').filter((line) => line.trim().length > 0);
 
   const colOffsetLens: [number, number][] = [];
-  const minLinLen = lines.reduce((prev, next) => Math.min(prev, next.length), Number.MAX_SAFE_INTEGER);
+  const minLinLen = lines.reduce(
+    (prev, next) => Math.min(prev, next.length),
+    Number.MAX_SAFE_INTEGER,
+  );
   let lastSpace = -1;
   for (let i = 0; i < minLinLen; i++) {
     if (lines.every((nextLine) => nextLine.at(i) === ' ')) {
@@ -102,7 +108,10 @@ const runTwo = () => {
 
     const result = constructedNums
       .map((nums) => Number(nums.join('')))
-      .reduce((prev, next) => (isSum ? prev + next : prev * next), isSum ? 0 : 1);
+      .reduce(
+        (prev, next) => (isSum ? prev + next : prev * next),
+        isSum ? 0 : 1,
+      );
     // console.log({ constructedNums, isSum, result });
     resultsSum += result;
   }
@@ -126,7 +135,10 @@ const runTwo = () => {
 
   const finalResult = finalConstructedNums
     .map((nums) => Number(nums.join('')))
-    .reduce((prev, next) => (isFinalSum ? prev + next : prev * next), isFinalSum ? 0 : 1);
+    .reduce(
+      (prev, next) => (isFinalSum ? prev + next : prev * next),
+      isFinalSum ? 0 : 1,
+    );
   resultsSum += finalResult;
 
   logAnswer({

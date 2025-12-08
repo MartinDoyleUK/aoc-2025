@@ -32,11 +32,15 @@ describe('Vector', () => {
     it('should throw error for Symbol without description', () => {
       // eslint-disable-next-line symbol-description
       const symbol = Symbol();
-      expect(() => new Vector(symbol)).toThrow('Supplied Symbol has no description');
+      expect(() => new Vector(symbol)).toThrow(
+        'Supplied Symbol has no description',
+      );
     });
 
     it('should throw error for invalid string format', () => {
-      expect(() => new Vector('invalid')).toThrow('Cannot convert "invalid" to Vector');
+      expect(() => new Vector('invalid')).toThrow(
+        'Cannot convert "invalid" to Vector',
+      );
     });
 
     it('should round-trip via toString()', () => {

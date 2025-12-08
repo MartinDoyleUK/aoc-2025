@@ -87,7 +87,12 @@ describe('Grid', () => {
   describe('getNeighbours()', () => {
     it('should return all cardinal neighbours for center point', () => {
       const point = new Point({ col: 1, row: 1 });
-      const neighbours = grid.getNeighbours(point, [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W]);
+      const neighbours = grid.getNeighbours(point, [
+        VECTORS.N,
+        VECTORS.E,
+        VECTORS.S,
+        VECTORS.W,
+      ]);
 
       expect(neighbours).toHaveLength(4);
       expect(neighbours.map((n) => n.value)).toEqual([2, 6, 8, 4]);
@@ -95,7 +100,12 @@ describe('Grid', () => {
 
     it('should filter out-of-bounds neighbours for corner point', () => {
       const point = new Point({ col: 0, row: 0 });
-      const neighbours = grid.getNeighbours(point, [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W]);
+      const neighbours = grid.getNeighbours(point, [
+        VECTORS.N,
+        VECTORS.E,
+        VECTORS.S,
+        VECTORS.W,
+      ]);
 
       expect(neighbours).toHaveLength(2);
       expect(neighbours.map((n) => n.value)).toEqual([2, 4]);
@@ -103,7 +113,12 @@ describe('Grid', () => {
 
     it('should filter out-of-bounds neighbours for edge point', () => {
       const point = new Point({ col: 1, row: 0 });
-      const neighbours = grid.getNeighbours(point, [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W]);
+      const neighbours = grid.getNeighbours(point, [
+        VECTORS.N,
+        VECTORS.E,
+        VECTORS.S,
+        VECTORS.W,
+      ]);
 
       expect(neighbours).toHaveLength(3);
       expect(neighbours.map((n) => n.value)).toEqual([3, 5, 1]);
@@ -111,7 +126,12 @@ describe('Grid', () => {
 
     it('should work with diagonal directions', () => {
       const point = new Point({ col: 1, row: 1 });
-      const neighbours = grid.getNeighbours(point, [VECTORS.NE, VECTORS.SE, VECTORS.SW, VECTORS.NW]);
+      const neighbours = grid.getNeighbours(point, [
+        VECTORS.NE,
+        VECTORS.SE,
+        VECTORS.SW,
+        VECTORS.NW,
+      ]);
 
       expect(neighbours).toHaveLength(4);
       expect(neighbours.map((n) => n.value)).toEqual([3, 9, 7, 1]);
@@ -130,7 +150,12 @@ describe('Grid', () => {
     it('should return empty array when all neighbours are out of bounds', () => {
       const smallGrid = new Grid([[1]]);
       const point = new Point({ col: 0, row: 0 });
-      const neighbours = smallGrid.getNeighbours(point, [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W]);
+      const neighbours = smallGrid.getNeighbours(point, [
+        VECTORS.N,
+        VECTORS.E,
+        VECTORS.S,
+        VECTORS.W,
+      ]);
 
       expect(neighbours).toHaveLength(0);
     });
@@ -294,11 +319,15 @@ describe('Grid', () => {
         [1, 2, 3],
         [4, 5, 6],
       ]);
-      const context = customGrid.traverse(new Point({ col: 0, row: 0 }), 'bfs', {
-        customContext: { customValue: 'test' },
-        multipath: false,
-        onVisit: () => ({ abort: true, visitNeighbours: false }),
-      });
+      const context = customGrid.traverse(
+        new Point({ col: 0, row: 0 }),
+        'bfs',
+        {
+          customContext: { customValue: 'test' },
+          multipath: false,
+          onVisit: () => ({ abort: true, visitNeighbours: false }),
+        },
+      );
       expect(context.customValue).toBe('test');
       expect(context.globalVisited).toBeDefined();
       expect(context.directions).toBeDefined();
@@ -333,7 +362,7 @@ describe('Grid', () => {
       grid.traverse(new Point({ col: 1, row: 1 }), 'bfs', {
         multipath: false,
         onVisit: ({ thisPointAndValue }) => {
-          const key = thisPointAndValue.point.toString();
+          const key = thisPointAndValue.point.toStr();
           visitCounts.set(key, (visitCounts.get(key) ?? 0) + 1);
           return { abort: false, visitNeighbours: true };
         },
@@ -412,7 +441,9 @@ describe('set()', () => {
 
   it('should throw when strictBounds is true and point is outside bounds', () => {
     const point = new Point({ col: 10, row: 10 });
-    expect(() => grid.set(point, 42, true)).toThrow('Point 10,10 is out of bounds (grid is 3x3)');
+    expect(() => grid.set(point, 42, true)).toThrow(
+      'Point 10,10 is out of bounds (grid is 3x3)',
+    );
   });
 
   it('should not throw when strictBounds is true and point is inside bounds', () => {

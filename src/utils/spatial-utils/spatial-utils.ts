@@ -19,7 +19,9 @@ export const POINT_REGEX = /^([+-]?\d+),([+-]?\d+)$/u;
  * grid.at(new Point({ row: 0, col: 1 })); // => 2
  */
 export const linesToNumberGrid = (lines: string[]): Grid<number> => {
-  return new Grid<number>(lines.map((nextLine) => nextLine.split('').map(Number)));
+  return new Grid<number>(
+    lines.map((nextLine) => nextLine.split('').map(Number)),
+  );
 };
 
 /**
@@ -51,5 +53,7 @@ export const linesToCustomGrid = <TGridData>(
   lines: string[],
   transform: (rawValue: string) => TGridData,
 ): Grid<TGridData> => {
-  return new Grid<TGridData>(lines.map((nextLine) => nextLine.split('').map(transform)));
+  return new Grid<TGridData>(
+    lines.map((nextLine) => nextLine.split('').map(transform)),
+  );
 };

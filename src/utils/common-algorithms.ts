@@ -1,9 +1,15 @@
 type FindTransitionArgs<TValue> = {
   array: readonly TValue[];
-  predicate: (value: TValue, index: number, array: readonly TValue[]) => boolean;
+  predicate: (
+    value: TValue,
+    index: number,
+    array: readonly TValue[],
+  ) => boolean;
 };
 
-type FindTransitionFunction = <TValue = unknown>(args: FindTransitionArgs<TValue>) => number | undefined;
+type FindTransitionFunction = <TValue = unknown>(
+  args: FindTransitionArgs<TValue>,
+) => number | undefined;
 
 /**
  * Get the mid-point of a numeric range, i.e. the next candidate for a binary search.
@@ -37,7 +43,10 @@ export const getMidpoint = (start: number, end: number) => {
  * // Derived from ordered numbers
  * findTransition({ array: [4, 9, 16, 25], predicate: (value) => value >= 20 }); // => 3
  */
-export const findTransition: FindTransitionFunction = ({ array, predicate }) => {
+export const findTransition: FindTransitionFunction = ({
+  array,
+  predicate,
+}) => {
   let start = 0;
   let end = array.length - 1;
 

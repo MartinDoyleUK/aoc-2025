@@ -129,12 +129,22 @@ export const VECTORS = {
 /**
  * Cardinal directions only: North, East, South, West.
  */
-export const CARDINAL_VECTORS: Vector[] = [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W];
+export const CARDINAL_VECTORS: Vector[] = [
+  VECTORS.N,
+  VECTORS.E,
+  VECTORS.S,
+  VECTORS.W,
+];
 
 /**
  * Diagonal directions only: NE, SE, SW, NW.
  */
-export const DIAGONAL_VECTORS: Vector[] = [VECTORS.NE, VECTORS.SE, VECTORS.SW, VECTORS.NW];
+export const DIAGONAL_VECTORS: Vector[] = [
+  VECTORS.NE,
+  VECTORS.SE,
+  VECTORS.SW,
+  VECTORS.NW,
+];
 
 /**
  * All eight directions: cardinal + diagonal.

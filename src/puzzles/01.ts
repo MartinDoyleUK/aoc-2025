@@ -6,7 +6,11 @@ const USE_TEST_DATA = false;
 // Load data from files
 const data = getDataForPuzzle(import.meta.url);
 
-const rotate = (start: number, dist: number, dir: 'left' | 'right'): { newPos: number; seenZero: number } => {
+const rotate = (
+  start: number,
+  dist: number,
+  dir: 'left' | 'right',
+): { newPos: number; seenZero: number } => {
   const realDist = dist % 100;
   const fullRotations = (dist - realDist) / 100;
 
