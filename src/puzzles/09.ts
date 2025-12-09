@@ -1,15 +1,10 @@
-import { getDataForPuzzle, logAnswer } from '../utils/index.js';
-
-import { exampleHelper } from './puzzle-helpers/TEMPLATE/example.js';
+import { getDataForPuzzle, logAnswer, Point } from '../utils/index.js';
 
 // Toggle this to use test or real data
 const USE_TEST_DATA = true;
 
 // Load data from files
 const data = getDataForPuzzle(import.meta.url);
-
-// EXAMPLE ONLY
-exampleHelper();
 
 // Run task one
 const runOne = () => {
@@ -20,8 +15,18 @@ const runOne = () => {
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 
+  const points = lines.map((line) =>
+    line
+      .split(',')
+      .map(Number)
+      .map((colRow) => {
+        const [col, row] = colRow as unknown as [number, number];
+        return Point.fromColRow({ col, row });
+      }),
+  );
+
   logAnswer({
-    answer: lines.length,
+    answer: points.length,
     expected: USE_TEST_DATA ? undefined : undefined,
     partNum: 1,
     taskStartedAt,

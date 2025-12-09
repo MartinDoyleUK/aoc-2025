@@ -88,7 +88,7 @@ export class Point {
     }
   }
 
-  public static fromColRow(col: number, row: number): Point {
+  public static fromColRow({ col, row }: ColRow): Point {
     return new Point({ col, row });
   }
 

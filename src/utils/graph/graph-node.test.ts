@@ -17,6 +17,8 @@ describe('GraphNode', () => {
       expect(child.id).toBe('child');
       expect(child.parents).toHaveLength(1);
       expect(child.parents[0]).toBe(parent);
+      expect(parent.children).toHaveLength(1);
+      expect(parent.children[0]).toBe(child);
     });
 
     it('should work with numeric IDs', () => {

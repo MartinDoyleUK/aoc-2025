@@ -225,7 +225,7 @@ const runTwo = () => {
       return 1;
     }
 
-    const thisPoint = Point.fromColRow(thisCol, thisRow);
+    const thisPoint = Point.fromColRow({ col: thisCol, row: thisRow });
     if (numTimelinesByCoord.has(thisPoint.toStr())) {
       return numTimelinesByCoord.get(thisPoint.toStr())!;
     }

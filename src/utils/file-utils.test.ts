@@ -56,6 +56,18 @@ describe('getDataForPuzzle()', () => {
     );
   });
 
+  it('should handle TypeScript puzzle filenames', () => {
+    const mockReadFileSync = vi.mocked(fs.readFileSync);
+    mockReadFileSync.mockReturnValue('data');
+
+    getDataForPuzzle('file:///path/to/puzzles/12.ts');
+
+    expect(mockReadFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('12'),
+      'utf8',
+    );
+  });
+
   it('should extract day number from filename correctly', () => {
     const mockReadFileSync = vi.mocked(fs.readFileSync);
     mockReadFileSync.mockReturnValue('data');

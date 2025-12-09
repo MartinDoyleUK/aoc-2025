@@ -14,6 +14,7 @@ type GridTraversalFn<TCustomContext, TGridData> = (
     onVisit: (
       info: StandardTraversalContext & TCustomContext & VisitInfo<TGridData>,
     ) => VisitResult;
+    skipEmpty?: boolean;
   },
 ) => StandardTraversalContext & TCustomContext;
 
@@ -280,6 +281,7 @@ export class Grid<
    * @param options.debug - Whether to log each visit for debugging.
    * @param options.directions - The directions to use when exploring neighbours.
    * @param options.multipath - When `true`, track per-path visited state instead of global only.
+   * @param options.skipEmpty - When `true`, skip visiting coordinates where {@link Grid.exists} is false.
    * @param options.onVisit - Callback invoked for each visited node.
    * @example
    * // Count reachable cells from the top-left corner
@@ -302,6 +304,7 @@ export class Grid<
       directions = [VECTORS.N, VECTORS.E, VECTORS.S, VECTORS.W],
       multipath,
       onVisit,
+      skipEmpty = false,
     },
   ) => {
     const globalVisited = new Set<string>();
@@ -329,13 +332,15 @@ export class Grid<
       return visitResult;
     };
 
-    const toVisit: VisitInfo<TGridData>[] = [
-      {
+    const startValue = this.at(startAt);
+    const toVisit: VisitInfo<TGridData>[] = [];
+    if (!skipEmpty || this.exists(startAt)) {
+      toVisit.push({
         path: [],
         thisPathVisited: new Set(),
-        thisPointAndValue: { point: startAt, value: this.at(startAt) },
-      },
-    ];
+        thisPointAndValue: { point: startAt, value: startValue },
+      });
+    }
 
     const getNextPoint =
       traversalType === 'bfs' ? () => toVisit.shift() : () => toVisit.pop();
@@ -360,6 +365,10 @@ export class Grid<
             const { path } = thisVisit;
             const nextNeighbour = point.applyVector(nextDir);
             const nextNeighbourValue = this.at(nextNeighbour);
+            if (skipEmpty && !this.exists(nextNeighbour)) {
+              continue;
+            }
+
             const newPath = [
               ...path,
               {

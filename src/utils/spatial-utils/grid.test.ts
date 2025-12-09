@@ -313,6 +313,50 @@ describe('Grid', () => {
       expect(context.globalVisited.size).toBeGreaterThan(0);
     });
 
+    it('should skip empty cells when skipEmpty is true', () => {
+      const ragged = new Grid([[1, 2], [3]]);
+      const visitedWithSkip: string[] = [];
+      const visitedWithoutSkip: string[] = [];
+
+      ragged.traverse(new Point({ col: 0, row: 0 }), 'bfs', {
+        multipath: false,
+        onVisit: ({ thisPointAndValue }) => {
+          visitedWithSkip.push(thisPointAndValue.point.toStr());
+          return { abort: false, visitNeighbours: true };
+        },
+        skipEmpty: true,
+      });
+
+      ragged.traverse(new Point({ col: 0, row: 0 }), 'bfs', {
+        multipath: false,
+        onVisit: ({ thisPointAndValue }) => {
+          visitedWithoutSkip.push(thisPointAndValue.point.toStr());
+          return { abort: false, visitNeighbours: true };
+        },
+        skipEmpty: false,
+      });
+
+      expect(visitedWithSkip).not.toContain('1,1');
+      expect(visitedWithoutSkip).toContain('1,1');
+    });
+
+    it('should not visit anything when skipEmpty is true and start point is empty', () => {
+      const ragged = new Grid([[1, 2], [3]]);
+      let visitCount = 0;
+
+      // Start at an empty cell (row 1, col 1 doesn't exist)
+      ragged.traverse(new Point({ col: 1, row: 1 }), 'bfs', {
+        multipath: false,
+        onVisit: () => {
+          visitCount++;
+          return { abort: false, visitNeighbours: true };
+        },
+        skipEmpty: true,
+      });
+
+      expect(visitCount).toBe(0);
+    });
+
     it('should include custom context in returned context', () => {
       type CustomContext = { customValue: string };
       const customGrid = new Grid<number, CustomContext>([

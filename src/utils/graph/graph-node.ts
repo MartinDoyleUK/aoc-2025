@@ -43,7 +43,7 @@ export class GraphNode<TId> {
   public constructor(id: TId, parent?: GraphNode<TId>) {
     this._id = id;
     if (parent) {
-      this._parents.push(parent);
+      parent.addChild(this);
     }
   }
 

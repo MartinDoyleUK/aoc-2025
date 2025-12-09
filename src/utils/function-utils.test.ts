@@ -70,4 +70,32 @@ describe('memoize()', () => {
     expect(memoized({ a: 1, b: 'test' })).toBe('1-test');
     expect(memoized({ a: 1, b: 'test' })).toBe('1-test');
   });
+
+  it('should normalize key order when memoizing', () => {
+    const calls: Array<{ a: number; b: number }> = [];
+    const fn = (args: { a: number; b: number }) => {
+      calls.push(args);
+      return args.a + args.b;
+    };
+
+    const memoized = memoize(fn);
+    expect(memoized({ a: 1, b: 2 })).toBe(3);
+    const reversedArgs = JSON.parse('{"b":2,"a":1}') as {
+      a: number;
+      b: number;
+    };
+    expect(memoized(reversedArgs)).toBe(3);
+
+    expect(calls).toHaveLength(1);
+    expect(calls[0]).toEqual({ a: 1, b: 2 });
+  });
+
+  it('should handle undefined arguments', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const fn = (_args: undefined) => 'result';
+    const memoized = memoize(fn);
+
+    expect(memoized(undefined)).toBe('result');
+    expect(memoized(undefined)).toBe('result'); // Should use cached value
+  });
 });

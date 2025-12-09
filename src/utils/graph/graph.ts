@@ -54,7 +54,14 @@ export class Graph<TId> {
       );
     }
 
-    const child = this._nodesById.get(childId) ?? new GraphNode<TId>(childId);
+    const existingChild = this._nodesById.get(childId);
+    if (existingChild && this.isReachable(existingChild, parentNode)) {
+      throw new Error(
+        `Cannot add child. Adding "${JSON.stringify(childId)}" under "${JSON.stringify(parentNode.id)}" would create a cycle`,
+      );
+    }
+
+    const child = existingChild ?? new GraphNode<TId>(childId);
 
     parentNode.addChild(child);
     this._nodesById.set(childId, child);
@@ -74,5 +81,30 @@ export class Graph<TId> {
     }
 
     return this._nodesById.get(idOrNode as TId);
+  }
+
+  /**
+   * Determine whether target is reachable from start using child edges.
+   */
+  private isReachable(start: GraphNode<TId>, target: GraphNode<TId>): boolean {
+    const visited = new Set<GraphNode<TId>>();
+    const toVisit: GraphNode<TId>[] = [start];
+
+    while (toVisit.length > 0) {
+      const next = toVisit.pop()!;
+      if (next === target) {
+        return true;
+      }
+
+      // Check if already visited before processing
+      if (!visited.has(next)) {
+        visited.add(next);
+        for (const child of next.children) {
+          toVisit.push(child);
+        }
+      }
+    }
+
+    return false;
   }
 }

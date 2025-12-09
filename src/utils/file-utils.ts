@@ -9,7 +9,7 @@ type GetDataForPuzzleFn = (importUrl: string) => {
 };
 
 const INPUTS_ROOTDIR = path.resolve(import.meta.dirname, '../../inputs');
-const PUZZLE_NUM_REGEX = /(\d{2}).js$/u;
+const PUZZLE_NUM_REGEX = /(\d{2})\.(?:[cm]?js|ts)$/u;
 
 /**
  * Load Advent of Code input files for a given puzzle module.

@@ -123,6 +123,84 @@ describe('Graph', () => {
       }).toThrow('Cannot add child. Parent not found');
     });
 
+    it('should throw when adding an edge that would create a cycle', () => {
+      const graph = new Graph('root');
+      graph.add('child', 'root');
+
+      expect(() => {
+        graph.add('root', 'child');
+      }).toThrow('would create a cycle');
+    });
+
+    it('should detect cycles in more complex DAG structures', () => {
+      const graph = new Graph('root');
+      graph.add('A', 'root');
+      graph.add('B', 'A');
+      graph.add('C', 'B');
+
+      // Try to add an edge from C back to A (would create cycle A -> B -> C -> A)
+      expect(() => {
+        graph.add('A', 'C');
+      }).toThrow('would create a cycle');
+    });
+
+    it('should detect cycles in diamond DAG when adding back edge', () => {
+      // Create diamond: root -> A -> C
+      //                       -> B /
+      const graph = new Graph('root');
+      graph.add('A', 'root');
+      graph.add('B', 'root');
+      graph.add('C', 'A');
+      graph.add('C', 'B'); // C now reachable from root via both A and B
+
+      // Try to create a cycle by adding root as child of C
+      expect(() => {
+        graph.add('root', 'C');
+      }).toThrow('would create a cycle');
+    });
+
+    it('should handle reachability check with multiple paths to same node', () => {
+      // Create: root -> B -> X -> Z
+      //                    -> Y -> Z
+      const graph = new Graph('root');
+      graph.add('B', 'root');
+      graph.add('X', 'B');
+      graph.add('Y', 'B');
+      graph.add('Z', 'X');
+      graph.add('Z', 'Y'); // Z reachable from B via two paths
+
+      // Try adding root as child of Z, which checks isReachable(Z, root)
+      // This traverses from Z and will encounter nodes multiple times
+      expect(() => {
+        graph.add('root', 'Z');
+      }).toThrow('would create a cycle');
+    });
+
+    it('should skip already-visited nodes during reachability check', () => {
+      // Create: root -> E -> A -> C
+      //                    -> B -> C
+      //              -> X
+      // E has a diamond pattern below it (both A and B lead to C)
+      const graph = new Graph('root');
+      graph.add('E', 'root');
+      graph.add('A', 'E');
+      graph.add('B', 'E');
+      graph.add('C', 'A');
+      graph.add('C', 'B'); // C is reachable from E via two paths
+      graph.add('X', 'root');
+
+      // Try to add E under X
+      // This checks isReachable(E, X) - is X reachable from E?
+      // X is NOT reachable from E, so we traverse E's entire subgraph
+      // During traversal: E -> A -> C, then E -> B -> C (C added twice)
+      // When C is popped the second time, it's already visited (else branch hit)
+      graph.add('E', 'X'); // Should succeed - no cycle
+
+      // Verify E now has two parents
+      const nodeE = graph.nodesById.get('E');
+      expect(nodeE?.parents).toHaveLength(2);
+    });
+
     it('should handle adding child to child node', () => {
       const graph = new Graph('root');
       graph.add('child', 'root');

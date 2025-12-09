@@ -101,7 +101,7 @@ describe('Point', () => {
 
   describe('static factory methods', () => {
     it('should create point from fromColRow', () => {
-      const point = Point.fromColRow(3, 7);
+      const point = Point.fromColRow({ col: 3, row: 7 });
       expect(point.col).toBe(3);
       expect(point.row).toBe(7);
     });

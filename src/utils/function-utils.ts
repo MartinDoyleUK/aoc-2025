@@ -7,11 +7,31 @@
  */
 export const noop = () => {};
 
+// Stable stringify helper (sorts object keys without mutating inputs)
+const stableStringify = (value: unknown): string => {
+  const serialized = JSON.stringify(value, (_key, val) => {
+    if (val && typeof val === 'object' && !Array.isArray(val)) {
+      const sortedKeys = Object.keys(val).toSorted();
+      const sortedCopy: Record<string, unknown> = {};
+      for (const nextKey of sortedKeys) {
+        sortedCopy[nextKey] = (val as Record<string, unknown>)[nextKey];
+      }
+
+      return sortedCopy;
+    }
+
+    return val;
+  });
+
+  return serialized ?? 'undefined';
+};
+
 /**
  * Memoize a function that takes a single argument object.
- * Results are cached using `JSON.stringify(argsObject)` as the key, which
- * makes this helper ideal for pure, deterministic functions with simple
- * argument shapes (numbers, strings, plain objects).
+ * Results are cached using a stable JSON serialization of the argument (keys sorted), which
+ * makes this helper ideal for pure, deterministic functions with simple, serializable
+ * argument shapes (numbers, strings, plain objects). Non-serializable inputs (e.g. containing
+ * functions, Symbols or circular references) will throw during serialization.
  * When `countExecutions` is `true`, the returned function is augmented with
  * a `getCounts()` method that exposes how many times each unique argument
  * combination was evaluated.
@@ -50,7 +70,7 @@ export const memoize = <Args, Result>(
     : undefined;
 
   const memoized = (argsObject: Args) => {
-    const argsString = JSON.stringify(argsObject);
+    const argsString = stableStringify(argsObject);
     if (!resultsMap.has(argsString)) {
       resultsMap.set(argsString, functionToMemoize(argsObject));
     }
