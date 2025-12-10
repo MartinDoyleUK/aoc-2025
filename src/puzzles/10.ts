@@ -8,7 +8,7 @@ type Machine = {
 };
 
 // Toggle this to use test or real data
-const USE_TEST_DATA = true;
+const USE_TEST_DATA = false;
 
 // Load data from files
 const data = getDataForPuzzle(import.meta.url);
@@ -21,6 +21,8 @@ const runOne = () => {
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
+
+  // console.log('');
 
   const machines: Machine[] = lines.map((line) => {
     const lightsStr = line.slice(1, line.indexOf(']'));
@@ -60,28 +62,59 @@ const runOne = () => {
     };
   });
 
-  console.log('machines', machines);
+  // console.log('machines', machines);
+  // console.log('');
 
-  const minPressesPerMachine: number[] = machines.map(({ buttons, lights }) => {
-    if (buttons.includes(lights)) {
-      return 1;
-    }
+  const MAX_DEPTH = 15;
+  const minPressesPerMachine: number[] = machines.map(
+    ({ buttons, lights: lightsTarget }, machineIdx) => {
+      if (buttons.includes(lightsTarget)) {
+        return 1;
+      }
 
-    // Need shortest path on a cyclic graph!!
+      const visited = new Set<number>();
+      const queue: { count: number; state: number }[] = [
+        { count: 0, state: 0 },
+      ];
 
-    return 100;
-  });
+      while (queue.length > 0) {
+        const { count, state } = queue.shift()!;
+        if (visited.has(state)) {
+          continue;
+        }
 
-  console.log('minPressesPerMachine', minPressesPerMachine);
+        visited.add(state);
+        if (state === lightsTarget) {
+          return count;
+        }
+
+        if (count >= MAX_DEPTH) {
+          continue;
+        }
+
+        for (const button of buttons) {
+          queue.push({ count: count + 1, state: state ^ button });
+        }
+      }
+
+      throw new Error(
+        `Could not reach target for machine ${machineIdx} within depth ${MAX_DEPTH}`,
+      );
+    },
+  );
+
+  // console.log('minPressesPerMachine', minPressesPerMachine);
 
   const allMachinePresses = minPressesPerMachine.reduce(
     (prev, next) => prev + next,
     0,
   );
 
+  // console.log('');
+
   logAnswer({
     answer: allMachinePresses,
-    expected: USE_TEST_DATA ? 7 : undefined,
+    expected: USE_TEST_DATA ? 7 : 538,
     partNum: 1,
     taskStartedAt,
   });
