@@ -88,14 +88,40 @@ export class Point {
     }
   }
 
+  /**
+   * Create a Point from a column and row object.
+   * @param params - Object containing col and row coordinates.
+   * @param params.col - The column index.
+   * @param params.row - The row index.
+   * @returns A new Point instance.
+   * @example
+   * const point = Point.fromColRow({ col: 3, row: 7 });
+   */
   public static fromColRow({ col, row }: ColRow): Point {
     return new Point({ col, row });
   }
 
+  /**
+   * Create a Point from a Symbol identifier.
+   * The symbol description must be in "row,col" format.
+   * @param id - Symbol with description in "row,col" format.
+   * @returns A new Point instance.
+   * @throws SyntaxError if the symbol has no description or cannot be parsed.
+   * @example
+   * const point = Point.fromId(Symbol.for('7,3'));
+   */
   public static fromId(id: Symbol): Point {
     return new Point(id);
   }
 
+  /**
+   * Create a Point from a string in "row,col" format.
+   * @param id - String in "row,col" format.
+   * @returns A new Point instance.
+   * @throws SyntaxError if the string cannot be parsed.
+   * @example
+   * const point = Point.fromString('7,3');
+   */
   public static fromString(id: string): Point {
     return new Point(id);
   }
